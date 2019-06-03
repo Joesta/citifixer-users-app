@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "960407233370",
+    "firebase_url": "https://potapp-707c7.firebaseio.com",
+    "project_id": "potapp-707c7",
+    "storage_bucket": "potapp-707c7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:960407233370:android:f0e64bb1826f647b",
+        "android_client_info": {
+          "package_name": "com.dso30bt.project2019.potapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "960407233370-mn9am1nj8jf1pc6u1cibk002lkmhelg3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dso30bt.project2019.potapp",
+            "certificate_hash": "ad42405917cae36ed6c9655d1c8a145bed7b1b4d"
+          }
+        },
+        {
+          "client_id": "960407233370-q4v2lnfupqn3t8tm05tu1a61dte9jmdg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA8c5pvAUANnhirzI8NiNAscPfQplOPmd0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "960407233370-q4v2lnfupqn3t8tm05tu1a61dte9jmdg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

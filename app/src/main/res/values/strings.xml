@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">City-Fixer</string>
+    <string-array name="gender">
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
+</resources>
