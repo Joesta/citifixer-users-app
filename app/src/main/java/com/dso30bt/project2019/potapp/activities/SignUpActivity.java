@@ -43,15 +43,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     private Button btnSingUp;
     private DatePicker datePicker;
 
-    //members
-    private String name;
-    private String surname;
-    private String emailAddress;
-    private String password;
-    private String idNumber;
-    private String cellNumber;
     private String gender;
-    private SimpleDateFormat simpleDateFormat;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -78,12 +70,13 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void getUserRegistrationInput() {
-        name = textInputName.getText().toString();
-        surname = textInputSurname.getText().toString();
-        emailAddress = textInputEmailAddress.getText().toString();
-        password = textInputPassword.getText().toString();
-        idNumber = textInputIdNumber.getText().toString();
-        cellNumber = textInputCell.getText().toString();
+        //members
+        String name = textInputName.getText().toString();
+        String surname = textInputSurname.getText().toString();
+        String emailAddress = textInputEmailAddress.getText().toString();
+        String password = textInputPassword.getText().toString();
+        String idNumber = textInputIdNumber.getText().toString();
+        String cellNumber = textInputCell.getText().toString();
         gender = spinner.getSelectedItem().toString();
 
         validateInput(name, surname, emailAddress, password, idNumber, cellNumber);
@@ -172,7 +165,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private boolean isYearOfBirthValid(String yearOfBirth) {
-        simpleDateFormat = new SimpleDateFormat("yy", Locale.getDefault());
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yy", Locale.getDefault());
         int year = datePicker.getYear();
         int formattedYear = Integer.valueOf(simpleDateFormat.format(year));
         int month = datePicker.getMonth();
