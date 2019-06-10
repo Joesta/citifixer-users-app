@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.MainActivity"
+    tools:context=".activities.LoginActivity"
     android:background="@drawable/bg_login">
 
     <ImageView
@@ -67,7 +67,7 @@
             android:layout_height="40dp"
             android:layout_margin="10dp"
             android:text="Login"
-            android:background="@drawable/buttons_bg"
+            android:background="@drawable/widget_border_bg"
             android:textColor="#000000"
             android:textStyle="bold"
             app:layout_constraintTop_toBottomOf="@+id/textInputPassword"
@@ -85,7 +85,7 @@
             android:textColor="#000000"
             android:text="Sign UP"
             android:textStyle="bold"
-            android:background="@drawable/buttons_bg"
+            android:background="@drawable/widget_border_bg"
             app:layout_constraintTop_toBottomOf="@+id/textInputPassword"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"

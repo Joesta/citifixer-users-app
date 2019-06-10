@@ -13,10 +13,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Pothole {
     private User user;
-    private String date;
+   // private String date;
     private double radius;
     private String imgUrl;
     private int potholeId;
-    private boolean status;
+   // private boolean status;
     private Coordinates coordinates;
 }

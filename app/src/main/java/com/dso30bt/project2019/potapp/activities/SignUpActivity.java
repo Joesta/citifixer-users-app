@@ -19,11 +19,9 @@ import com.dso30bt.project2019.potapp.models.User;
 import com.dso30bt.project2019.potapp.models.UserReport;
 import com.dso30bt.project2019.potapp.repository.UserImpl;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Created by Joesta on 2019/05/29.
@@ -128,7 +126,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
             focusView = textInputIdNumber;
             cancel = true;
-            textInputIdNumber.setError("Invalid ID Number!");
+            textInputIdNumber.setError("Invalid ID Number or Date of birth does not match!");
 
         } else if (TextUtils.isEmpty(cellNumber) || TextUtils.getTrimmedLength(cellNumber) == 0) {
             focusView = textInputCell;
@@ -165,28 +163,41 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private boolean isYearOfBirthValid(String yearOfBirth) {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yy", Locale.getDefault());
+
         int year = datePicker.getYear();
-        int formattedYear = Integer.valueOf(simpleDateFormat.format(year));
-        int month = datePicker.getMonth();
+        Log.d(TAG, "isYearOfBirthValid: Year of birth " + yearOfBirth);
+        Log.d(TAG, "isYearOfBirthValid: formatted year " + year);
+
+        int formattedYear = Integer.valueOf(TextUtils.substring(String.valueOf(year), 2, 4));
+        Log.d(TAG, "isYearOfBirthValid: formatted year " + formattedYear);
+        int month = datePicker.getMonth() + 1;
+        Log.d(TAG, "isYearOfBirthValid: datePickerMonth " + month);
+        Log.d(TAG, "isYearOfBirthValid: param YoB month " + TextUtils.substring(yearOfBirth, 2, 4));
         int day = datePicker.getDayOfMonth();
+        Log.d(TAG, "isYearOfBirthValid: day of month " + day);
 
         return (formattedYear == Integer.valueOf(TextUtils.substring(yearOfBirth, 0, 2)))
                 && (month == Integer.valueOf(TextUtils.substring(yearOfBirth, 2, 4)))
-                && (day == Integer.valueOf(TextUtils.substring(yearOfBirth, 4, 6)));
+                && (day == Integer.valueOf(TextUtils.substring(yearOfBirth, 4, 6))
+                && Integer.valueOf(TextUtils.substring(yearOfBirth, 11, 12)) == 8);
+    }
+
+    private boolean isMonthOfBirthValid(int monthOfBirth) {
+        return monthOfBirth > 0;
+    }
+
+    private boolean isDayOfBirthValid(int dayOfBirth) {
+        return dayOfBirth > 0;
+    }
+
+    private String getGender(int ssss) {
+        // Female - 0000 - 4999
+        // Male   - 5000 - 9999
+        return ssss >= 5000 ? "Male" : "Female";
     }
 
     private boolean isSACitizen(String idNumber) {
         return Integer.valueOf(TextUtils.substring(idNumber, 10, 11)) == 0;
-    }
-
-    private boolean isIdGenderFemale(String idNumber) {
-        // male 5000 - 9999
-        // female 0000 - 4999
-        // ssss
-        int ssss = 4999;
-        return ssss <= Integer.valueOf(TextUtils.substring(idNumber, 6, 10));
-
     }
 
     private boolean isAdult() {
