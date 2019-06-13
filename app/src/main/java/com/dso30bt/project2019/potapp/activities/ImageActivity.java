@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.media.ExifInterface;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -14,13 +15,14 @@ import android.widget.ImageView;
 
 import com.dso30bt.project2019.potapp.R;
 import com.dso30bt.project2019.potapp.models.UserReport;
-import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+
 
 /**
  * Created by Joesta on 2019/06/05.
@@ -28,10 +30,7 @@ import java.util.List;
 public class ImageActivity extends AppCompatActivity {
 
     private static final int REQUEST_TAKE_PHOTO = 1;
-    private static final int PERMISSION_REQUEST_CODE = 200;
     private static final String TAG = "ImageActivity";
-
-    private Uri imageUrl;
 
     private String currentPhotoPath;
     //widgets
@@ -89,14 +88,17 @@ public class ImageActivity extends AppCompatActivity {
                         if (bitmap != null) {
                             int nh = (int) (bitmap.getHeight() * (512.0 / bitmap.getWidth()));
                             Bitmap scaled = Bitmap.createScaledBitmap(bitmap, 512, nh, true);
-                            //potholeImage.setImageURI(Uri.fromFile(file));
-                            potholeImage.setImageBitmap(scaled);
-                        }
 
-                    }
+                            final double[] coordinates = getCoordinatesFromImageExit(file);
+                            Log.d(TAG, "onActivityResult: coordinates. Lat " + coordinates[0] + " lng " + coordinates[1]);
+
+                            potholeImage.setImageBitmap(scaled);
+
+                        } // end bitmap nullable check
+                    } // end resultCode check
                     break;
-                }
-            }
+                } // end case
+            } // end switch
 
         } catch (Exception error) {
             error.printStackTrace();
@@ -118,5 +120,23 @@ public class ImageActivity extends AppCompatActivity {
         // Save a file: path for use with ACTION_VIEW intents
         currentPhotoPath = image.getAbsolutePath();
         return image;
+    }
+
+    private double[] getCoordinatesFromImageExit(File file) {
+        double latlng[] = null;
+        try {
+            ExifInterface exifInterface = new ExifInterface(String.valueOf(file));
+            latlng = exifInterface.getLatLong();
+            double lat = Objects.requireNonNull(latlng)[0];
+            double lng = latlng[1];
+
+            Log.d(TAG, "getCoordinatesFromImageExit: Lat " + lat + " lng " + lng);
+            return latlng;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.d(TAG, "getCoordinatesFromImageExit: Error: " + e.getLocalizedMessage());
+        }
+        return latlng;
     }
 }
