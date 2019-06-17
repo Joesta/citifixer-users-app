@@ -1,5 +1,6 @@
 package com.dso30bt.project2019.potapp.activities;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -11,23 +12,33 @@ import android.support.media.ExifInterface;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dso30bt.project2019.potapp.R;
+import com.dso30bt.project2019.potapp.models.Coordinates;
+import com.dso30bt.project2019.potapp.models.Pothole;
 import com.dso30bt.project2019.potapp.models.UserReport;
+import com.dso30bt.project2019.potapp.repository.UserImpl;
+import com.dso30bt.project2019.potapp.utils.SharedPreferenceManager;
+import com.dso30bt.project2019.potapp.utils.Utils;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 
 /**
  * Created by Joesta on 2019/06/05.
  */
-public class ImageActivity extends AppCompatActivity {
+public class ImageActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final int REQUEST_TAKE_PHOTO = 1;
     private static final String TAG = "ImageActivity";
@@ -35,21 +46,44 @@ public class ImageActivity extends AppCompatActivity {
     private String currentPhotoPath;
     //widgets
     private ImageView potholeImage;
+    private TextView tvLat;
+    private TextView tvLng;
+    private TextView tvDate;
+    private Button btnUpload;
+    private Button btnCancel;
+    private String userEmail;
+
 
     //members
     private List<UserReport> userReportList;
+    private Coordinates coordinates;
+    private Uri imageUri;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image);
 
+        //get login details
+        userEmail = SharedPreferenceManager.getUserEmail(this);
         initUI();
         dispatchTakePictureIntent();
     }
 
     private void initUI() {
         potholeImage = findViewById(R.id.potholeImageView);
+        tvLat = findViewById(R.id.tvLat);
+        tvLng = findViewById(R.id.tvLng);
+        tvDate = findViewById(R.id.tvDate);
+        btnUpload = findViewById(R.id.btnUpload);
+        btnCancel = findViewById(R.id.btnCancel);
+
+        registerButtons();
+    }
+
+    private void registerButtons() {
+        btnUpload.setOnClickListener(this);
+        btnCancel.setOnClickListener(this);
     }
 
     private void dispatchTakePictureIntent() {
@@ -89,11 +123,14 @@ public class ImageActivity extends AppCompatActivity {
                             int nh = (int) (bitmap.getHeight() * (512.0 / bitmap.getWidth()));
                             Bitmap scaled = Bitmap.createScaledBitmap(bitmap, 512, nh, true);
 
-                            final double[] coordinates = getCoordinatesFromImageExit(file);
-                            Log.d(TAG, "onActivityResult: coordinates. Lat " + coordinates[0] + " lng " + coordinates[1]);
-
-                            potholeImage.setImageBitmap(scaled);
-
+                            //save image uri
+                            imageUri = Uri.fromFile(file);
+                            //@Todo - uncomment to get actual image exif gps data
+                            //final double[] imageCoordinates = getCoordinatesFromImageExit(file);
+                            final double[] imageCoordinates = new double[]{-25.7499763, 28.2151983};
+                            Log.d(TAG, "onActivityResult: coordinates. Lat " + imageCoordinates[0] + " lng " + imageCoordinates[1]);
+                            coordinates = getCoordinates(imageCoordinates);
+                            setUIValues(scaled, coordinates);
                         } // end bitmap nullable check
                     } // end resultCode check
                     break;
@@ -104,6 +141,24 @@ public class ImageActivity extends AppCompatActivity {
             error.printStackTrace();
             Log.d(TAG, "onActivityResult: " + error.getLocalizedMessage());
         }
+    }
+
+    private Coordinates getCoordinates(double[] paramCoordinates) {
+        return new Coordinates(new Date(), paramCoordinates[0], paramCoordinates[1]);
+    }
+
+    private void setUIValues(Bitmap scaled, Coordinates coordinates) {
+        potholeImage.setImageBitmap(scaled); // set image
+
+        String latitudeInfo = tvLat.getText() + " : " + coordinates.getLatitude();
+        String longitudeInfo = tvLng.getText() + "  : " + coordinates.getLongitude();
+        String dateInfo = tvDate.getText() + "  : " +
+                new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()).format(coordinates.getDate());
+
+        tvLat.setText(latitudeInfo);
+        tvLng.setText(longitudeInfo);
+        tvDate.setText(dateInfo);
+
     }
 
     private File createImageFile() throws IOException {
@@ -135,8 +190,48 @@ public class ImageActivity extends AppCompatActivity {
 
         } catch (IOException e) {
             e.printStackTrace();
-            Log.d(TAG, "getCoordinatesFromImageExit: Error: " + e.getLocalizedMessage());
+            Log.d(TAG, "IOException: Error: " + e.getLocalizedMessage());
+        } catch (NullPointerException npe) {
+            Utils.showToast(this, "Error. Failed to ready image metadata");
+            System.out.println("NullPointerException Error: " + npe.getLocalizedMessage());
         }
         return latlng;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btnUpload:
+                addNewPothole();
+                break;
+            case R.id.btnCancel:
+                displayDialog();
+                break;
+            default:
+                break;
+
+        }
+    }
+
+    private void displayDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Take another photo?");
+        builder.setPositiveButton("Yes", (dialog, which) -> dispatchTakePictureIntent());
+        builder.setNegativeButton("No", (dialog, which) -> dialog.dismiss()).create();
+
+        builder.show();
+    }
+
+    private void addNewPothole() {
+        Toast.makeText(this, "Upload button tapped", Toast.LENGTH_SHORT).show();
+        UserImpl userImp = new UserImpl(this);
+        Pothole pothole = new Pothole();
+        pothole.setCoordinates(coordinates);
+        pothole.setDescription("Pothole");
+
+        File imageFile = new File(currentPhotoPath);
+        //add pothole
+        userImp.addPothole(pothole, imageFile);
+
     }
 }

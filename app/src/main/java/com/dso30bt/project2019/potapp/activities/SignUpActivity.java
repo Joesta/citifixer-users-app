@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+
 /**
  * Created by Joesta on 2019/05/29.
  */
@@ -153,10 +154,9 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             focusView.requestFocus();
         } else {
             // let the genius stuff happen
-            int id = 0;
             List<Pothole> potholesList = new ArrayList<>();
             List<UserReport> userReports = new ArrayList<>();
-            User user = new User(id, name, emailAddress, gender, surname, idNumber, password, cellNumber, potholesList, userReports);
+            User user = new User(name, emailAddress, gender, surname, idNumber, password, cellNumber, potholesList, userReports);
             UserImpl userImpl = new UserImpl(SignUpActivity.this);
             userImpl.registerUser(user);
         }

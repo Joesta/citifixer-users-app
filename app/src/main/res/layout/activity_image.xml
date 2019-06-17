@@ -31,26 +31,14 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:fontFamily="monospace"
-            android:text="Description"
+            android:text="Description: Pothole"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/potholeImageView" />
 
         <TextView
-            android:id="@+id/longitude"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:fontFamily="monospace"
-            android:text="Longitude"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/potholeDescription" />
-
-        <TextView
-            android:id="@+id/latitude"
+            android:id="@+id/tvLat"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
@@ -59,10 +47,22 @@
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/longitude" />
+            app:layout_constraintTop_toBottomOf="@+id/potholeDescription" />
 
         <TextView
-            android:id="@+id/date"
+            android:id="@+id/tvLng"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:fontFamily="monospace"
+            android:text="Longitude"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvLat" />
+
+        <TextView
+            android:id="@+id/tvDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
@@ -71,10 +71,10 @@
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/latitude" />
+            app:layout_constraintTop_toBottomOf="@+id/tvLng" />
 
         <Button
-            android:id="@+id/upload"
+            android:id="@+id/btnUpload"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_marginStart="32dp"
@@ -82,10 +82,10 @@
             android:background="@drawable/ic_upload"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/date" />
+            app:layout_constraintTop_toBottomOf="@id/tvDate" />
 
         <Button
-            android:id="@+id/cancel"
+            android:id="@+id/btnCancel"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_marginStart="16dp"
@@ -93,8 +93,8 @@
             android:layout_marginEnd="32dp"
             android:background="@drawable/ic_cancel"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/upload"
-            app:layout_constraintTop_toBottomOf="@id/date"
+            app:layout_constraintStart_toEndOf="@id/btnUpload"
+            app:layout_constraintTop_toBottomOf="@id/tvDate"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_bias="0.9"/>
 

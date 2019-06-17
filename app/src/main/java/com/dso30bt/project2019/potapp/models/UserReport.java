@@ -11,7 +11,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class UserReport {
-    private int reportId;
+    private String reportId;
     private Date timeStamp;
     //private Address address;
     private String description;
