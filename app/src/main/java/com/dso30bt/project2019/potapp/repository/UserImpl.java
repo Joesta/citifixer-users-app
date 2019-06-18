@@ -2,6 +2,7 @@ package com.dso30bt.project2019.potapp.repository;
 
 import android.app.Activity;
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 
 import com.dso30bt.project2019.potapp.CustomApplication;
@@ -20,6 +21,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -34,7 +38,7 @@ import java.util.Objects;
 public class UserImpl implements IUserRepository {
 
     private static final String TAG = "UserImpl";
-    //FirebaseStorage storage;
+    FirebaseStorage storage;
     DatabaseReference usersRef;
     // FirebaseDatabase database = FirebaseDatabase.getInstance();
     // DatabaseReference ref = database.getReference("user/");
@@ -150,13 +154,13 @@ public class UserImpl implements IUserRepository {
         user = getUser(userEmail);
         //pothole.setUser(user);
 
-//        if (user != null) {
-//            user.getPotholeList().add(pothole);
-//            updateUser(loadMap(user), user.getEmail());
-//            uploadPotholeImage(imageFile);
-//        } else {
-//            System.out.println("Failed to update");
-//        }
+        if (user != null) {
+            user.getPotholeList().add(pothole);
+            updateUser(loadMap(user), user.getEmail());
+            // uploadPotholeImage(imageFile);
+        } else {
+            System.out.println("Failed to update");
+        }
     }
 
 //    private void uploadPotholeImage(File imageFile) {
