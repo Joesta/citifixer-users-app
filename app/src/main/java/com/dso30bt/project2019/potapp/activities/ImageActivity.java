@@ -126,8 +126,8 @@ public class ImageActivity extends AppCompatActivity implements View.OnClickList
                             //save image uri
                             imageUri = Uri.fromFile(file);
                             //@Todo - uncomment to get actual image exif gps data
-                            //final double[] imageCoordinates = getCoordinatesFromImageExit(file);
-                            final double[] imageCoordinates = new double[]{-25.7499763, 28.2151983};
+                            final double[] imageCoordinates = getCoordinatesFromImageExit(file);
+                            //final double[] imageCoordinates = new double[]{-25.7499763, 28.2151983};
                             Log.d(TAG, "onActivityResult: coordinates. Lat " + imageCoordinates[0] + " lng " + imageCoordinates[1]);
                             coordinates = getCoordinates(imageCoordinates);
                             setUIValues(scaled, coordinates);
