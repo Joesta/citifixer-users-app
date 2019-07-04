@@ -6,6 +6,7 @@ import android.net.Uri;
 import com.dso30bt.project2019.potapp.models.LoginModel;
 import com.dso30bt.project2019.potapp.models.Pothole;
 import com.dso30bt.project2019.potapp.models.User;
+import com.google.firebase.firestore.DocumentReference;
 
 import java.io.File;
 import java.util.Map;
@@ -21,11 +22,11 @@ public interface IUserRepository {
 
     void deleteUser(String email);
 
-    void updateUser(Map<String, Object> userMap, String email);
+    void updateUser(Map<String, Object> userMap, DocumentReference documentRef);
 
     void loginUserByEmail(LoginModel loginModel);
 
-    User getUser(String email);
+   // User getUser(DocumentReference documentRef);
 
     void addPothole(Pothole pothole, File imageFile);
 }
