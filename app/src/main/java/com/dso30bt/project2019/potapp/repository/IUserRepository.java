@@ -24,5 +24,5 @@ public interface IUserRepository {
 
     // User getUser(DocumentReference documentRef);
 
-    void addPothole(Pothole pothole, File imageFile);
+    void addPotholeAndImage(Pothole pothole, File imageFile);
 }

@@ -57,7 +57,6 @@ public class ImageActivity extends AppCompatActivity implements View.OnClickList
 
 
     //members
-    private List<UserReport> userReportList;
     private Coordinates coordinates;
     private Uri imageUri;
 
@@ -233,7 +232,7 @@ public class ImageActivity extends AppCompatActivity implements View.OnClickList
 
         File imageFile = new File(currentPhotoPath);
         //add pothole
-        userImp.addPothole(pothole, imageFile);
+        userImp.addPotholeAndImage(pothole, imageFile);
 
     }
 }

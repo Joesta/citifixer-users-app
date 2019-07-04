@@ -1,5 +1,8 @@
 package com.dso30bt.project2019.potapp.models;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,10 +16,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Pothole {
     private User user;
-   // private String date;
-   // private double radius;
-   // private String imgUrl;
+    // private String date;
+    // private double radius;
     private String description;
-   // private boolean status;
+    // private boolean status;
     private Coordinates coordinates;
+    private List<String> downloadUrlList = new ArrayList<>();
 }
