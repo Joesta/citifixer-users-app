@@ -122,12 +122,12 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             focusView = textInputIdNumber;
             cancel = true;
             textInputIdNumber.setError("You must be 18 year older.");
-        } else if (!isYearOfBirthValid(TextUtils.substring(idNumber, 0, 6))
-                && isSACitizen(idNumber)) {
-
-            focusView = textInputIdNumber;
-            cancel = true;
-            textInputIdNumber.setError("Invalid ID Number or Date of birth does not match!");
+//        } else if (!isYearOfBirthValid(TextUtils.substring(idNumber, 0, 6))
+//                && isSACitizen(idNumber)) {
+//
+//            focusView = textInputIdNumber;
+//            cancel = true;
+//            textInputIdNumber.setError("Invalid ID Number or Date of birth does not match!");
 
         } else if (TextUtils.isEmpty(cellNumber) || TextUtils.getTrimmedLength(cellNumber) == 0) {
             focusView = textInputCell;
@@ -205,7 +205,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         int currentYear = calendar.get(Calendar.YEAR);
         int yearOBirth = datePicker.getYear();
         Log.d(TAG, "isAdult: " + yearOBirth);
-        Log.d(TAG, "isAdult: " + (currentYear - yearOBirth >= 18));
+        Log.d(TAG, "isAdult: " + currentYear + " - " + yearOBirth+ " = " + (currentYear - yearOBirth >= 18));
         return currentYear - yearOBirth >= 18; //true if 18 years and older
     }
 

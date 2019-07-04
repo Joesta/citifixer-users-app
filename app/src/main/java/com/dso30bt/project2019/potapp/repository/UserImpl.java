@@ -17,8 +17,6 @@ import com.dso30bt.project2019.potapp.utils.NavUtil;
 import com.dso30bt.project2019.potapp.utils.SharedPreferenceManager;
 import com.dso30bt.project2019.potapp.utils.Utils;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -31,8 +29,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-
-import okhttp3.internal.Util;
 
 /**
  * Created by Joesta on 2019/05/30.
@@ -47,37 +43,24 @@ public class UserImpl implements IUserRepository {
 
     public UserImpl(Context context) {
         this.context = context;
-        //final CustomApplication app = CustomApplication.getInstance();
-        // db = FirebaseFirestore.getInstance();
         userEmail = SharedPreferenceManager.getUserEmail(context);
     }
 
     @Override
     public void registerUser(User user) {
-        //check if user exist
-//        int flag = searchUser(user.getEmail());
-//        if (flag == 1) {
-//            getDocumentRef(user.getEmail()).set(loadMap(user)).addOnSuccessListener(aVoid -> {
-//                Log.d(TAG, "User was successfully added");
-//                NavUtil.moveToNextActivity(context, LoginActivity.class);
-//            }).addOnFailureListener(e -> {
-//                Log.d(TAG, "Error has occurred " + e.getMessage());
-//                ErrorHandler.showToast(context, "There was a problem while trying to register!");
-//            });
-//        } else {
-//            Log.d(TAG, "registerUser: " + flagUserExist);
-//            ErrorHandler.showToast(context, "User already exist");
-//        }
-    }
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference documentRef = db.collection(Constants.USER_COLLECTION).document(user.getEmail());
 
-    @Override
-    public int searchUser(String email) {
-//        getDocumentRef(email).get()
-//                .addOnSuccessListener(aVoid -> flagUserExist = true)
-//                .addOnFailureListener(e -> flagUserExist = false);
-//        Log.d(TAG, "searchUser: Flag is " + flagUserExist);
-//        return flagUserExist ? 0 : 1;
-        return 1;
+        documentRef.get()
+                .addOnSuccessListener((Activity) context, documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        Utils.showToast(context, "User already exist!");
+                    } else {
+                        documentRef.set(loadMap(user)).addOnSuccessListener(aVoid -> {
+                            Utils.showToast(context, "User Registered");
+                        }).addOnFailureListener(error -> Utils.showToast(context, "Error " + error.getLocalizedMessage()));
+                    }
+                });
     }
 
     @Override
@@ -113,8 +96,6 @@ public class UserImpl implements IUserRepository {
         }).addOnFailureListener(e -> {
             ErrorHandler.showToast(context, e.getLocalizedMessage());
         });
-
-
     }
 
     @Override
@@ -124,7 +105,7 @@ public class UserImpl implements IUserRepository {
                 .document(SharedPreferenceManager.getUserEmail(context));
         documentRef.get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
-                Utils.showToast(context, "Document exists");
+                Log.d(TAG, "addPothole: document exists. add pothole for the user");
                 User user = documentSnapshot.toObject(User.class);
                 user.getPotholes().add(pothole);
                 Map<String, Object> userMap = loadMap(user);
@@ -132,7 +113,7 @@ public class UserImpl implements IUserRepository {
                 uploadPotholeImage(imageFile);
 
             } else {
-                Utils.showToast(context, "Document does not exist");
+                Log.d(TAG, "addPothole: document for user does not exist");
             }
         }).addOnFailureListener(error -> Utils.showToast(context, "Error: " + error.getLocalizedMessage()));
     }
@@ -145,81 +126,14 @@ public class UserImpl implements IUserRepository {
 
             StorageReference storageRef = mStorage.getReference(path);
             UploadTask uploadTask = storageRef.putFile(imageUri);
-            uploadTask.addOnSuccessListener((Activity)context, new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            uploadTask.addOnSuccessListener((Activity) context, new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     Utils.showToast(context, "Uploaded");
                 }
-            }).addOnFailureListener((Activity)context, e -> Utils.showToast(context, "Failed to upload"));
+            }).addOnFailureListener((Activity) context, e -> Utils.showToast(context, "Failed to upload"));
 
         }
-
-//        if (imageFile != null) {
-//            FirebaseStorage storage = FirebaseStorage.getInstance();
-//            StorageReference storageRef = storage.getReference();
-//
-//            // [START create_child_reference]
-//            // Create a child reference
-//
-//            Uri uri = Uri.fromFile(imageFile);
-//            StorageReference imageRef = storageRef.child("potholeImages/" + UUID.randomUUID().toString() + "/" + uri.getLastPathSegment());
-//
-//            UploadTask uploadTask = imageRef.putFile(uri);
-//            uploadTask.addOnSuccessListener(taskSnapshot -> {
-//                Utils.showToast(context, "Upload successful");
-//            }).addOnFailureListener( error -> {
-//                Utils.showToast(context, error.getLocalizedMessage());
-//                error.printStackTrace();
-//            });
-//        }
-
-
-//        if (imageFile != null) {
-//            mStorage = FirebaseStorage.getInstance();
-
-        // ## Create a Reference
-
-        //Uri uri = Uri.fromFile(imageFile);
-
-        // [START create_child_reference]
-        // Create a child reference
-        // imagesRef now points to "images"
-        // StorageReference imagesRef = storageRef.child("images/" + UUID.randomUUID().toString() + "/" + uri.getLastPathSegment());
-        //imagesRef.putFile(uri);
-//            uploadTask.addOnFailureListener(e -> {
-//                System.out.println("Error uploading file");
-//            }).addOnSuccessListener(taskSnapshot -> {
-//                // handle successful upload
-//                System.out.println("Uploaded");
-//            });
-
-
-//            StorageReference storageRef = mStorage.getReference();
-//            StorageReference imageRef = storageRef.child("potholeImages/" + UUID.randomUUID().toString() + imageFile.getName());
-//            Uri uri = Uri.fromFile(imageFile);
-//
-//            try {
-//                UploadTask uploadTask = imageRef.putFile(uri);
-//
-//                Task<Uri> downloadUrl = uploadTask.getResult().getStorage().getDownloadUrl();
-//                if (downloadUrl.isSuccessful()) {
-//                    System.out.println("Upload task successful");
-//                    downloadUrl.addOnSuccessListener(uri1 -> {
-//                        mUserRef.child("potholeImages/" + userEmail);
-//                        Map<String, String> potholePicPath = new HashMap<>();
-//                        if (uri1 != null) {
-//                            potholePicPath.put("potholeImages", uri1.toString());
-//                            mUserRef.setValue(potholePicPath);
-//                        }
-//                    });
-//                } else {
-//                    System.out.println(uploadTask.getException().getStackTrace());
-//                }
-//
-//
-//            } catch (NullPointerException npe) {
-//                System.out.println(npe.getLocalizedMessage());
-//            }
     }
 
     private Map<String, Object> loadMap(User user) {
