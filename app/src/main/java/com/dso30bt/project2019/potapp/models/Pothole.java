@@ -18,8 +18,8 @@ public class Pothole {
     private User user;
     // private String date;
     // private double radius;
+    private String potholeUrl;
     private String description;
     // private boolean status;
     private Coordinates coordinates;
-    private List<String> downloadUrlList = new ArrayList<>();
 }

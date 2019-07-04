@@ -120,7 +120,7 @@ public class UserImpl implements IUserRepository {
                         Task<Uri> downloadUrl = taskSnapshot.getStorage().getDownloadUrl();
                         downloadUrl.addOnSuccessListener((Activity) context, uri -> {
                             //add url to url pothole url list
-                            pothole.getDownloadUrlList().add(uri.toString());
+                            pothole.setPotholeUrl(uri.toString());
                             //add user pothole
                             user.getPotholes().add(pothole);
                             Map<String, Object> userMap = loadMap(user);
