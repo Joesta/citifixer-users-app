@@ -16,6 +16,7 @@ import com.dso30bt.project2019.potapp.repository.UserImpl;
 import com.dso30bt.project2019.potapp.utils.ErrorHandler;
 import com.dso30bt.project2019.potapp.utils.InternetConnectionHelper;
 import com.dso30bt.project2019.potapp.utils.NavUtil;
+import com.dso30bt.project2019.potapp.utils.SharedPreferenceManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 
@@ -64,6 +65,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onStart() {
         super.onStart();
         Log.d(TAG, "onStart: It gets here then move on");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        isUserLoggedIn();
+    }
+
+    private void isUserLoggedIn() {
+        String userEmail = SharedPreferenceManager.getUserEmail(LoginActivity.this);
+        if (!TextUtils.isEmpty(userEmail) || userEmail != null) {
+            NavUtil.moveToNextActivity(LoginActivity.this, MainActivity.class);
+            finish();
+        }
     }
 
     // initializes login control vies

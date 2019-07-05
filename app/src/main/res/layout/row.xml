@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <!--Parent layout for contents-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="290dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="12dp"
+            card_view:cardCornerRadius="10dp"
+            android:layout_marginTop="8dp"
+            app:cardBackgroundColor="@android:color/transparent"
+            card_view:cardElevation="3dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout"
+                android:layout_width="match_parent"
+                android:layout_height="290dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="4dp"
+                android:elevation="10dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0">
+                
+                <ImageView
+                    android:id="@+id/potholeImageView"
+                    android:layout_width="match_parent"
+                    android:layout_height="110dp"
+                    android:layout_marginTop="8dp"
+                    card_view:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    android:src="@drawable/image_holder" />
+
+                <View
+                    android:id="@+id/view_separator"
+                    android:layout_width="320dp"
+                    android:layout_height="1dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:background="#D84315"
+                    card_view:layout_constraintTop_toBottomOf="@id/potholeImageView"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"/>
+
+                <!--description-->
+                <TextView
+                    android:id="@+id/descriptionText"
+                    android:layout_width="120dp"
+                    android:layout_height="19dp"
+                    android:text="Description"
+                    android:layout_margin="5dp"
+                    android:textColor="@color/text"
+                    android:textStyle="bold"
+                    android:fontFamily="monospace"
+                    android:textSize="15sp"
+                    android:layout_marginStart="10dp"
+                    card_view:layout_constraintStart_toStartOf="parent"
+                    card_view:layout_constraintTop_toBottomOf="@id/view_separator"
+                    android:layout_marginTop="5dp" />
+
+                <ImageView
+                    android:id="@+id/vertical_line_1"
+                    android:layout_width="6dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/from_to_purple"
+                    android:layout_marginTop="3dp"
+                    card_view:layout_constraintStart_toEndOf="@id/descriptionText"
+                    card_view:layout_constraintTop_toBottomOf="@id/view_separator"/>
+
+                <TextView
+                    android:id="@+id/descriptionTextValue"
+                    android:layout_width="170dp"
+                    android:layout_height="19dp"
+                    android:text="********"
+                    android:layout_margin="5dp"
+                    android:textColor="@color/text"
+                    android:textStyle="bold"
+                    android:fontFamily="monospace"
+                    android:textSize="15sp"
+                   card_view:layout_constraintStart_toEndOf="@id/vertical_line_1"
+                    card_view:layout_constraintTop_toBottomOf="@id/view_separator"
+                    android:layout_marginTop="5dp" />
+
+                <!--latitude-->
+
+                <TextView
+                    android:id="@+id/latitudeText"
+                    android:layout_width="120dp"
+                    android:layout_height="19dp"
+                    android:text="Latitude"
+                    android:layout_margin="5dp"
+                    android:textColor="@color/text"
+                    android:textStyle="bold"
+                    android:fontFamily="monospace"
+                    android:textSize="15sp"
+                    android:layout_marginStart="10dp"
+                    card_view:layout_constraintStart_toStartOf="parent"
+                    card_view:layout_constraintTop_toBottomOf="@+id/descriptionText"
+                    android:layout_marginTop="5dp" />
+
+                <ImageView
+                    android:id="@+id/vertical_line_2"
+                    android:layout_width="6dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/from_to_purple"
+                    android:layout_marginTop="3dp"
+                    card_view:layout_constraintStart_toEndOf="@id/latitudeText"
+                    card_view:layout_constraintTop_toBottomOf="@id/vertical_line_1"
+
+                    />
+
+                <TextView
+                    android:id="@+id/latitudeTextValue"
+                    android:layout_width="170dp"
+                    android:layout_height="18dp"
+                    android:text="********"
+                    android:layout_margin="5dp"
+                    android:textColor="@color/text"
+                    android:textStyle="bold"
+                    android:fontFamily="monospace"
+                    android:textSize="15sp"
+                    card_view:layout_constraintStart_toEndOf="@id/vertical_line_2"
+                    card_view:layout_constraintTop_toBottomOf="@id/descriptionTextValue"
+                    android:layout_marginTop="5dp" />
+
+                <!--longitude-->
+                <TextView
+                    android:id="@+id/longtitudeText"
+                    android:layout_width="120dp"
+                    android:layout_height="19dp"
+                    android:text="Longitude"
+                    android:layout_margin="5dp"
+                    android:textColor="@color/text"
+                    android:textStyle="bold"
+                    android:fontFamily="monospace"
+                    android:textSize="15sp"
+                    android:layout_marginStart="10dp"
+                    card_view:layout_constraintStart_toStartOf="parent"
+                    card_view:layout_constraintTop_toBottomOf="@id/latitudeText"
+                    android:layout_marginTop="5dp" />
+
+                <ImageView
+                    android:id="@+id/vertical_line_3"
+                    android:layout_width="6dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/from_to_purple"
+                    android:layout_marginTop="3dp"
+                    card_view:layout_constraintStart_toEndOf="@id/longtitudeText"
+                    card_view:layout_constraintTop_toBottomOf="@id/vertical_line_2"
+
+                    />
+
+                <TextView
+                    android:id="@+id/longitudeTextValue"
+                    android:layout_width="170dp"
+                    android:layout_height="19dp"
+                    android:text="********"
+                    android:layout_margin="5dp"
+                    android:textColor="@color/text"
+                    android:textStyle="bold"
+                    android:fontFamily="monospace"
+                    android:textSize="15sp"
+                    card_view:layout_constraintStart_toEndOf="@id/vertical_line_3"
+                    card_view:layout_constraintTop_toBottomOf="@id/latitudeTextValue"
+                    android:layout_marginTop="5dp" />
+
+                <!--date reported-->
+                <TextView
+                    android:id="@+id/dateReportedText"
+                    android:layout_width="120dp"
+                    android:layout_height="19dp"
+                    android:text="Reported On"
+                    android:layout_margin="5dp"
+                    android:textColor="@color/text"
+                    android:textStyle="bold"
+                    android:fontFamily="monospace"
+                    android:textSize="15sp"
+                    android:layout_marginStart="10dp"
+                    card_view:layout_constraintStart_toStartOf="parent"
+                    card_view:layout_constraintTop_toBottomOf="@id/longtitudeText"
+                    android:layout_marginTop="5dp" />
+
+                <ImageView
+                    android:id="@+id/vertical_line_4"
+                    android:layout_width="6dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/from_to_purple"
+                    android:layout_marginTop="3dp"
+                    card_view:layout_constraintStart_toEndOf="@id/dateReportedText"
+                    card_view:layout_constraintTop_toBottomOf="@id/vertical_line_3"
+
+                    />
+
+                <TextView
+                    android:id="@+id/dateReportedTextValue"
+                    android:layout_width="170dp"
+                    android:layout_height="19dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="5dp"
+                    android:fontFamily="monospace"
+                    android:text="********"
+                    android:textColor="@color/text"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    card_view:layout_constraintStart_toEndOf="@id/dateReportedText"
+                    card_view:layout_constraintTop_toBottomOf="@id/longitudeTextValue" />
+
+                <!--Reporter-->
+                <TextView
+                    android:id="@+id/reporterText"
+                    android:layout_width="120dp"
+                    android:layout_height="19dp"
+                    android:text="Reported By"
+                    android:layout_margin="5dp"
+                    android:textColor="@color/text"
+                    android:textStyle="bold"
+                    android:fontFamily="monospace"
+                    android:textSize="15sp"
+                    android:layout_marginStart="10dp"
+                    card_view:layout_constraintStart_toStartOf="parent"
+                    card_view:layout_constraintTop_toBottomOf="@id/dateReportedText"
+                    android:layout_marginTop="5dp" />
+
+                <ImageView
+                    android:id="@+id/vertical_line_5"
+                    android:layout_width="6dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/from_to_purple"
+                    android:layout_marginTop="3dp"
+                    card_view:layout_constraintStart_toEndOf="@id/reporterText"
+                    card_view:layout_constraintTop_toBottomOf="@id/vertical_line_4"
+
+                    />
+
+                <TextView
+                    android:id="@+id/reporterTextValue"
+                    android:layout_width="170dp"
+                    android:layout_height="19dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="5dp"
+                    android:fontFamily="monospace"
+                    android:text="********"
+                    android:textColor="@color/text"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    card_view:layout_constraintStart_toEndOf="@id/reporterText"
+                    card_view:layout_constraintTop_toBottomOf="@id/dateReportedTextValue" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -84,9 +84,13 @@ public class UserImpl implements IUserRepository {
             if (documentSnapshot.exists()) {
                 this.user = documentSnapshot.toObject(User.class);
                 if (loginModel.getPassword().equals(user.getPassword())) {
+
                     Utils.showToast(context, "User logged in");
+                    SharedPreferenceManager.saveUserEmail(context,loginModel.getEmailAddress());
+
                     NavUtil.moveToNextActivity(context, MainActivity.class);
                     ((LoginActivity) context).finish();
+
                 } else {
                     Utils.showToast(context, "Check your login credentials and Re-try");
                 }
@@ -125,6 +129,8 @@ public class UserImpl implements IUserRepository {
                             user.getPotholes().add(pothole);
                             Map<String, Object> userMap = loadMap(user);
                             updateUser(userMap, documentRef);
+
+                            Utils.showToast(context, "Report was send!");
 
                         }).addOnFailureListener(error -> Utils.showToast(context, "Error: " + error.getLocalizedMessage()));;
                     }).addOnFailureListener(error -> Utils.showToast(context, "Error: " + error.getLocalizedMessage()));
