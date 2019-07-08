@@ -62,6 +62,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void gotoImageActivity() {
+        Intent i = new Intent(MainActivity.this, ImageActivity.class);
+
         startActivity(new Intent(MainActivity.this, ImageActivity.class));
     }
 
@@ -76,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onPause() {
         Log.d(TAG, "onPause:");
-        if (!disposable.isDisposed()) {
+        if (!disposable.isDisposed() && disposable != null) {
             disposable.dispose();
         }
         super.onPause();

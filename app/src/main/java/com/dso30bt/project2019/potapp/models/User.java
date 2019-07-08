@@ -21,7 +21,7 @@ public class User {
     private String IdNumber;
     private String password;
     private String cellNumber;
-    private List<Pothole> potholeList;
+    private List<Pothole> potholes;
     private List<UserReport> userReport;
 
 }

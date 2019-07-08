@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.dso30bt.project2019.potapp.R;
 import com.dso30bt.project2019.potapp.models.Coordinates;
 import com.dso30bt.project2019.potapp.models.Pothole;
+import com.dso30bt.project2019.potapp.models.User;
 import com.dso30bt.project2019.potapp.models.UserReport;
 import com.dso30bt.project2019.potapp.repository.UserImpl;
 import com.dso30bt.project2019.potapp.utils.SharedPreferenceManager;
@@ -52,6 +53,7 @@ public class ImageActivity extends AppCompatActivity implements View.OnClickList
     private Button btnUpload;
     private Button btnCancel;
     private String userEmail;
+    private User user;
 
 
     //members
@@ -126,8 +128,8 @@ public class ImageActivity extends AppCompatActivity implements View.OnClickList
                             //save image uri
                             imageUri = Uri.fromFile(file);
                             //@Todo - uncomment to get actual image exif gps data
-                            final double[] imageCoordinates = getCoordinatesFromImageExit(file);
-                            //final double[] imageCoordinates = new double[]{-25.7499763, 28.2151983};
+                            //final double[] imageCoordinates = getCoordinatesFromImageExit(file);
+                            final double[] imageCoordinates = new double[]{-25.7499763, 28.2151983};
                             Log.d(TAG, "onActivityResult: coordinates. Lat " + imageCoordinates[0] + " lng " + imageCoordinates[1]);
                             coordinates = getCoordinates(imageCoordinates);
                             setUIValues(scaled, coordinates);
