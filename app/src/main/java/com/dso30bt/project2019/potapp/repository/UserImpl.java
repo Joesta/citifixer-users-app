@@ -16,7 +16,7 @@ import com.dso30bt.project2019.potapp.utils.ErrorHandler;
 import com.dso30bt.project2019.potapp.utils.NavUtil;
 import com.dso30bt.project2019.potapp.utils.SharedPreferenceManager;
 import com.dso30bt.project2019.potapp.utils.Utils;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -84,9 +84,13 @@ public class UserImpl implements IUserRepository {
             if (documentSnapshot.exists()) {
                 this.user = documentSnapshot.toObject(User.class);
                 if (loginModel.getPassword().equals(user.getPassword())) {
+
                     Utils.showToast(context, "User logged in");
+                    SharedPreferenceManager.saveUserEmail(context,loginModel.getEmailAddress());
+
                     NavUtil.moveToNextActivity(context, MainActivity.class);
                     ((LoginActivity) context).finish();
+
                 } else {
                     Utils.showToast(context, "Check your login credentials and Re-try");
                 }
@@ -98,42 +102,44 @@ public class UserImpl implements IUserRepository {
         });
     }
 
-    @Override
-    public void addPothole(Pothole pothole, File imageFile) {
+    public void addPotholeAndImage(Pothole pothole, File imageFile) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference documentRef = db.collection(Constants.USER_COLLECTION)
                 .document(SharedPreferenceManager.getUserEmail(context));
         documentRef.get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
-                Log.d(TAG, "addPothole: document exists. add pothole for the user");
-                User user = documentSnapshot.toObject(User.class);
-                user.getPotholes().add(pothole);
-                Map<String, Object> userMap = loadMap(user);
-                updateUser(userMap, documentRef);
-                uploadPotholeImage(imageFile);
+                Log.d(TAG, "addPotholeAndImage: document exists. add pothole for the user");
+
+                if (imageFile != null) {
+                    Uri imageUri = Uri.fromFile(imageFile);
+                    String path = "potholes/" + UUID.randomUUID().toString() + imageUri.getLastPathSegment();
+
+                    StorageReference storageRef = mStorage.getReference(path);
+                    UploadTask uploadTask = storageRef.putFile(imageUri);
+                    uploadTask.addOnSuccessListener((Activity) context, taskSnapshot -> {
+
+                        User user = documentSnapshot.toObject(User.class);
+
+                        //get download url
+                        Task<Uri> downloadUrl = taskSnapshot.getStorage().getDownloadUrl();
+                        downloadUrl.addOnSuccessListener((Activity) context, uri -> {
+                            //add url to url pothole url list
+                            pothole.setPotholeUrl(uri.toString());
+                            //add user pothole
+                            user.getPotholes().add(pothole);
+                            Map<String, Object> userMap = loadMap(user);
+                            updateUser(userMap, documentRef);
+
+                            Utils.showToast(context, "Report was send!");
+
+                        }).addOnFailureListener(error -> Utils.showToast(context, "Error: " + error.getLocalizedMessage()));;
+                    }).addOnFailureListener(error -> Utils.showToast(context, "Error: " + error.getLocalizedMessage()));
+                }
 
             } else {
-                Log.d(TAG, "addPothole: document for user does not exist");
+                Log.d(TAG, "addPotholeAndImage: document for user does not exist");
             }
         }).addOnFailureListener(error -> Utils.showToast(context, "Error: " + error.getLocalizedMessage()));
-    }
-
-    private void uploadPotholeImage(File imageFile) {
-
-        if (imageFile != null) {
-            Uri imageUri = Uri.fromFile(imageFile);
-            String path = "potholes/" + UUID.randomUUID().toString() + imageUri.getLastPathSegment();
-
-            StorageReference storageRef = mStorage.getReference(path);
-            UploadTask uploadTask = storageRef.putFile(imageUri);
-            uploadTask.addOnSuccessListener((Activity) context, new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Utils.showToast(context, "Uploaded");
-                }
-            }).addOnFailureListener((Activity) context, e -> Utils.showToast(context, "Failed to upload"));
-
-        }
     }
 
     private Map<String, Object> loadMap(User user) {

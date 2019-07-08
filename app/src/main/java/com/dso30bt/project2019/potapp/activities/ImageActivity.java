@@ -7,10 +7,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import androidx.annotation.Nullable;
-import androidx.exifinterface.media.ExifInterface;
-import androidx.core.content.FileProvider;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -22,7 +18,6 @@ import com.dso30bt.project2019.potapp.R;
 import com.dso30bt.project2019.potapp.models.Coordinates;
 import com.dso30bt.project2019.potapp.models.Pothole;
 import com.dso30bt.project2019.potapp.models.User;
-import com.dso30bt.project2019.potapp.models.UserReport;
 import com.dso30bt.project2019.potapp.repository.UserImpl;
 import com.dso30bt.project2019.potapp.utils.SharedPreferenceManager;
 import com.dso30bt.project2019.potapp.utils.Utils;
@@ -31,9 +26,13 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
+import androidx.exifinterface.media.ExifInterface;
 
 
 /**
@@ -57,7 +56,6 @@ public class ImageActivity extends AppCompatActivity implements View.OnClickList
 
 
     //members
-    private List<UserReport> userReportList;
     private Coordinates coordinates;
     private Uri imageUri;
 
@@ -233,7 +231,17 @@ public class ImageActivity extends AppCompatActivity implements View.OnClickList
 
         File imageFile = new File(currentPhotoPath);
         //add pothole
-        userImp.addPothole(pothole, imageFile);
+        userImp.addPotholeAndImage(pothole, imageFile);
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        gotHome();
+    }
+
+    private void gotHome() {
+        startActivity(new Intent(ImageActivity.this, MainActivity.class));
     }
 }
