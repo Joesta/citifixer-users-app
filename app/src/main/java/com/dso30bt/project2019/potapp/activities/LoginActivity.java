@@ -1,7 +1,6 @@
 package com.dso30bt.project2019.potapp.activities;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
@@ -18,6 +17,8 @@ import com.dso30bt.project2019.potapp.utils.InternetConnectionHelper;
 import com.dso30bt.project2019.potapp.utils.NavUtil;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 /**
  * Created by Joesta on 2019/05/29.
