@@ -23,11 +23,27 @@ public class SharedPreferenceManager {
         return sp.getString(SharedPreferenceHelper.USER_EMAIL, null);
     }
 
-    public static void saveUserEmail(Context ctx, String userEmail) {
+    public static void saveUserInfo(Context ctx, String userEmail, String username) {
         SharedPreferences sp =
                 ctx.getSharedPreferences(SharedPreferenceHelper.LOGIN_INFO, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
+        editor.putString(SharedPreferenceHelper.USERNAME, username);
         editor.putString(SharedPreferenceHelper.USER_EMAIL, userEmail);
+        editor.apply();
+    }
+
+
+    public static String getUsername(Context ctx) {
+        SharedPreferences sp
+                = ctx.getSharedPreferences(SharedPreferenceHelper.LOGIN_INFO, Context.MODE_PRIVATE);
+        return sp.getString(SharedPreferenceHelper.USERNAME, null);
+    }
+
+    public static void clearSavedLoginInfo(Context ctx) {
+        SharedPreferences sp =
+                ctx.getSharedPreferences(SharedPreferenceHelper.LOGIN_INFO, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.clear();
         editor.apply();
     }
 
@@ -35,5 +51,6 @@ public class SharedPreferenceManager {
         private static final String  LOGIN_INFO = "login_info";
         private static final String AUTH_TOKEN = "auth_token";
         private static final String USER_EMAIL = "emailAddress";
+        private static final String USERNAME = "username";
     }
 }

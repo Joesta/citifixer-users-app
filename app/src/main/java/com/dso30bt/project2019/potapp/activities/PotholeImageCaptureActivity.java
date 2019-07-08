@@ -24,6 +24,7 @@ import com.dso30bt.project2019.potapp.utils.Utils;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -38,14 +39,15 @@ import androidx.exifinterface.media.ExifInterface;
 /**
  * Created by Joesta on 2019/06/05.
  */
-public class ImageActivity extends AppCompatActivity implements View.OnClickListener {
+public class PotholeImageCaptureActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final int REQUEST_TAKE_PHOTO = 1;
-    private static final String TAG = "ImageActivity";
+    private static final String TAG = "PotholeImageCapture";
 
     private String currentPhotoPath;
     //widgets
     private ImageView potholeImage;
+    private TextView tvDescription;
     private TextView tvLat;
     private TextView tvLng;
     private TextView tvDate;
@@ -72,9 +74,10 @@ public class ImageActivity extends AppCompatActivity implements View.OnClickList
 
     private void initUI() {
         potholeImage = findViewById(R.id.potholeImageView);
-        tvLat = findViewById(R.id.tvLat);
-        tvLng = findViewById(R.id.tvLng);
-        tvDate = findViewById(R.id.tvDate);
+        tvDescription = findViewById(R.id.tvPotholeDescriptionText);
+        tvLat = findViewById(R.id.tvLatitudeText);
+        tvLng = findViewById(R.id.tvLongitudeText);
+        tvDate = findViewById(R.id.tvDateText);
         btnUpload = findViewById(R.id.btnUpload);
         btnCancel = findViewById(R.id.btnCancel);
 
@@ -126,8 +129,8 @@ public class ImageActivity extends AppCompatActivity implements View.OnClickList
                             //save image uri
                             imageUri = Uri.fromFile(file);
                             //@Todo - uncomment to get actual image exif gps data
-                            //final double[] imageCoordinates = getCoordinatesFromImageExit(file);
-                            final double[] imageCoordinates = new double[]{-25.7499763, 28.2151983};
+                            final double[] imageCoordinates = getCoordinatesFromImageExit(file);
+                            //final double[] imageCoordinates = new double[]{-25.7499763, 28.2151983};
                             Log.d(TAG, "onActivityResult: coordinates. Lat " + imageCoordinates[0] + " lng " + imageCoordinates[1]);
                             coordinates = getCoordinates(imageCoordinates);
                             setUIValues(scaled, coordinates);
@@ -150,20 +153,21 @@ public class ImageActivity extends AppCompatActivity implements View.OnClickList
     private void setUIValues(Bitmap scaled, Coordinates coordinates) {
         potholeImage.setImageBitmap(scaled); // set image
 
-        String latitudeInfo = tvLat.getText() + " : " + coordinates.getLatitude();
-        String longitudeInfo = tvLng.getText() + "  : " + coordinates.getLongitude();
-        String dateInfo = tvDate.getText() + "  : " +
-                new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()).format(coordinates.getDate());
+        String dateInfo =
+                new SimpleDateFormat("yyyy-MM-dd_HHmmss", Locale.getDefault()).format(coordinates.getDate());
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
-        tvLat.setText(latitudeInfo);
-        tvLng.setText(longitudeInfo);
-        tvDate.setText(dateInfo);
+        final String potholeDescription = "Pothole";
+        tvDescription.setText(potholeDescription);
+        tvLat.setText(String.valueOf(coordinates.getLatitude()));
+        tvLng.setText(String.valueOf(coordinates.getLongitude()));
+        tvDate.setText(timestamp.toString());
 
     }
 
     private File createImageFile() throws IOException {
         // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
@@ -242,6 +246,6 @@ public class ImageActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void gotHome() {
-        startActivity(new Intent(ImageActivity.this, MainActivity.class));
+        startActivity(new Intent(PotholeImageCaptureActivity.this, MainActivity.class));
     }
 }

@@ -10,7 +10,6 @@ import com.dso30bt.project2019.potapp.activities.MainActivity;
 import com.dso30bt.project2019.potapp.models.LoginModel;
 import com.dso30bt.project2019.potapp.models.Pothole;
 import com.dso30bt.project2019.potapp.models.User;
-import com.dso30bt.project2019.potapp.models.UserReport;
 import com.dso30bt.project2019.potapp.utils.Constants;
 import com.dso30bt.project2019.potapp.utils.ErrorHandler;
 import com.dso30bt.project2019.potapp.utils.NavUtil;
@@ -25,9 +24,7 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -38,14 +35,22 @@ public class UserImpl implements IUserRepository {
     private static final String TAG = "UserImpl";
     FirebaseStorage mStorage = FirebaseStorage.getInstance();
     private Context context;
-    private User user;
+    private User mUser;
     private String userEmail;
 
+    /***
+     * constructor
+     * @param context of activity instantiating this object
+     */
     public UserImpl(Context context) {
         this.context = context;
         userEmail = SharedPreferenceManager.getUserEmail(context);
     }
 
+    /***
+     * register new user
+     * @param user new user
+     */
     @Override
     public void registerUser(User user) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -56,7 +61,7 @@ public class UserImpl implements IUserRepository {
                     if (documentSnapshot.exists()) {
                         Utils.showToast(context, "User already exist!");
                     } else {
-                        documentRef.set(loadMap(user)).addOnSuccessListener(aVoid -> {
+                        documentRef.set(getMap(user)).addOnSuccessListener(aVoid -> {
                             Utils.showToast(context, "User Registered");
                         }).addOnFailureListener(error -> Utils.showToast(context, "Error " + error.getLocalizedMessage()));
                     }
@@ -67,14 +72,23 @@ public class UserImpl implements IUserRepository {
     public void deleteUser(String email) {
 //        getDocumentRef(email).delete()
 //                .addOnSuccessListener(aVoid -> Log.d(TAG, "deleteUser: User deleted"))
-//                .addOnFailureListener(e -> Log.d(TAG, "deleteUser: Failed to delete user " + e.getLocalizedMessage()));
+//                .addOnFailureListener(e -> Log.d(TAG, "deleteUser: Failed to delete mUser " + e.getLocalizedMessage()));
     }
 
+    /***
+     * update user
+     * @param userMap holding user's information
+     * @param documentRef user's document to update
+     */
     @Override
     public void updateUser(Map<String, Object> userMap, DocumentReference documentRef) {
         documentRef.update(userMap);
     }
 
+    /***
+     * loggin user by email address
+     * @param loginModel object hold user login info
+     */
     @Override
     public void loginUserByEmail(final LoginModel loginModel) {
 
@@ -82,12 +96,12 @@ public class UserImpl implements IUserRepository {
         DocumentReference document = db.collection(Constants.USER_COLLECTION).document(loginModel.getEmailAddress());
         document.get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
-                this.user = documentSnapshot.toObject(User.class);
-                if (loginModel.getPassword().equals(user.getPassword())) {
+                this.mUser = documentSnapshot.toObject(User.class);
+                if (loginModel.getPassword().equals(mUser.getPassword())) {
 
                     Utils.showToast(context, "User logged in");
-                    SharedPreferenceManager.saveUserEmail(context,loginModel.getEmailAddress());
-
+                    SharedPreferenceManager.saveUserInfo(context, this.mUser.getEmail(), this.mUser.getName());
+                    System.out.println("Logged-in user is --> " + this.mUser.getName());
                     NavUtil.moveToNextActivity(context, MainActivity.class);
                     ((LoginActivity) context).finish();
 
@@ -102,13 +116,18 @@ public class UserImpl implements IUserRepository {
         });
     }
 
+    /***
+     * add user's reported pothole and pothole image
+     * @param pothole user pothole
+     * @param imageFile pothole image file
+     */
     public void addPotholeAndImage(Pothole pothole, File imageFile) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference documentRef = db.collection(Constants.USER_COLLECTION)
-                .document(SharedPreferenceManager.getUserEmail(context));
+                .document(userEmail);
         documentRef.get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
-                Log.d(TAG, "addPotholeAndImage: document exists. add pothole for the user");
+                Log.d(TAG, "addPotholeAndImage: document exists. add pothole for the mUser");
 
                 if (imageFile != null) {
                     Uri imageUri = Uri.fromFile(imageFile);
@@ -125,24 +144,30 @@ public class UserImpl implements IUserRepository {
                         downloadUrl.addOnSuccessListener((Activity) context, uri -> {
                             //add url to url pothole url list
                             pothole.setPotholeUrl(uri.toString());
-                            //add user pothole
+                            //add mUser pothole
                             user.getPotholes().add(pothole);
-                            Map<String, Object> userMap = loadMap(user);
+                            Map<String, Object> userMap = getMap(user);
                             updateUser(userMap, documentRef);
 
                             Utils.showToast(context, "Report was send!");
 
-                        }).addOnFailureListener(error -> Utils.showToast(context, "Error: " + error.getLocalizedMessage()));;
+                        }).addOnFailureListener(error -> Utils.showToast(context, "Error: " + error.getLocalizedMessage()));
+                        ;
                     }).addOnFailureListener(error -> Utils.showToast(context, "Error: " + error.getLocalizedMessage()));
                 }
 
             } else {
-                Log.d(TAG, "addPotholeAndImage: document for user does not exist");
+                Log.d(TAG, "addPotholeAndImage: document for mUser does not exist");
             }
         }).addOnFailureListener(error -> Utils.showToast(context, "Error: " + error.getLocalizedMessage()));
     }
 
-    private Map<String, Object> loadMap(User user) {
+    /***
+     * create map from user object
+     * @param user to create map from
+     * @return Map
+     */
+    private Map<String, Object> getMap(User user) {
         Map<String, Object> userMap = new HashMap<>();
         userMap.put(Constants.DocumentFields.NAME, user.getName());
         userMap.put(Constants.DocumentFields.CELL_NUMBER, user.getCellNumber());
@@ -157,72 +182,4 @@ public class UserImpl implements IUserRepository {
         return userMap;
     }
 
-    /**
-     * @param map - map containing user data
-     * @return user object
-     */
-    private User generateUserFromMap(Map<String, Object> map) {
-
-        User user = new User();
-        user.setName(Objects.requireNonNull(map.get(Constants.DocumentFields.NAME)).toString());
-        System.out.println(user.getName());
-        user.setSurname(Objects.requireNonNull(map.get(Constants.DocumentFields.SURNAME)).toString());
-        System.out.println(user.getSurname());
-        user.setGender(Objects.requireNonNull(map.get(Constants.DocumentFields.GENDER)).toString());
-        System.out.println(user.getGender());
-        user.setIdNumber(Objects.requireNonNull(map.get(Constants.DocumentFields.ID_NUMBER)).toString());
-        System.out.println(user.getIdNumber());
-        user.setCellNumber(Objects.requireNonNull(map.get(Constants.DocumentFields.CELL_NUMBER)).toString());
-        System.out.println(user.getCellNumber());
-        user.setEmail(Objects.requireNonNull(map.get(Constants.DocumentFields.EMAIL)).toString());
-        System.out.println(user.getEmail());
-        user.setPassword(Objects.requireNonNull(map.get(Constants.DocumentFields.PASSWORD)).toString());
-        System.out.println(user.getPassword());
-        user.setPotholes((List<Pothole>) map.get(Constants.DocumentFields.POTHOLES));
-        System.out.println("Pothole list size " + user.getPotholes().size());
-        user.setUserReport((List<UserReport>) map.get(Constants.DocumentFields.REPORTS));
-        System.out.println("Report list size " + user.getUserReport().size());
-
-        return user;
-
-    }
-
-    public Map<String, Object> getUserMap(String userEmail) {
-
-//        Task<DocumentSnapshot> docSnapShotTask = getDocSnapShotTask(userEmail);
-//        final Map<String, Object> userMap = new HashMap<>();
-//
-//        if (docSnapShotTask.isSuccessful()) {
-//            docSnapShotTask.addOnSuccessListener(documentSnapshot -> {
-//                if (documentSnapshot.exists()) {
-//                    userMap.putAll(Objects.requireNonNull(documentSnapshot.getData()));
-//                } else {
-//                    Log.d(TAG, "getUserMap: document does not exist");
-//                }
-//            }).addOnFailureListener(error -> {
-//                Log.d(TAG, "getUserMap: something wrong happened: " + error.getLocalizedMessage());
-//            });
-//        }
-//
-//        Log.d(TAG, "getUserMap: The user is: " + userMap.get(Constants.DocumentFields.NAME));
-//        return userMap;
-        return null;
-    }
-//
-//    /**
-//     * @param email email referencing a user's document
-//     * @return document task
-//     */
-//    private DocumentReference getDocumentRef(String email) {
-//        return FirebaseFirestore.getInstance().collection(Constants.USER_COLLECTION).document(email);
-//    }
-//
-//    /**
-//     * @param email email of user
-//     * @return document snapshot task
-//     */
-//    private Task<DocumentSnapshot> getDocSnapShotTask(String email) {
-//        System.out.println("getDocSnapShotTask " + getDocumentRef(email).get());
-//        return getDocumentRef(email).get();
-//    }
 }
