@@ -57,7 +57,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         //    gotoHome();
         // }
 
-        initLoginControlViews();
+        initUI();
         registerButtons();
     }
 
@@ -73,6 +73,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         isUserLoggedIn();
     }
 
+    /***
+     * check is user is logged in before using the app
+     */
     private void isUserLoggedIn() {
         String userEmail = SharedPreferenceManager.getUserEmail(LoginActivity.this);
         if (!TextUtils.isEmpty(userEmail) || userEmail != null) {
@@ -81,26 +84,37 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    // initializes login control vies
-    private void initLoginControlViews() {
+    /***
+     * initializes UI widgets
+     */
+    private void initUI() {
         textInputEmailAddress = findViewById(R.id.textInputEmail);
         textInputPassword = findViewById(R.id.textInputPassword);
         btnLogin = findViewById(R.id.btnLogin);
         btnSignUp = findViewById(R.id.btnSignUp);
     }
 
-    //register buttons to listener
+    /***
+     * register buttons to click listener
+     */
     private void registerButtons() {
         this.btnLogin.setOnClickListener(this);
         this.btnSignUp.setOnClickListener(this);
     }
 
-    //get inputs from controls
+    /***
+     * get user login input from login activity
+     */
     private void getUserLoginInput() {
         emailAddress = textInputEmailAddress.getText().toString();
         password = textInputPassword.getText().toString();
     }
 
+    /***
+     * valudate user input
+     * @param emailAddress user input email
+     * @param password user input password
+     */
     private void validateUserLoginInput(String emailAddress, String password) {
         View focusView = null;
         boolean cancel = false;
@@ -134,10 +148,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
+    /***
+     * validate email address
+     * @param emailAddress user email address
+     * @return true if valid. false otherwise
+     */
     private boolean isEmailAddress(String emailAddress) {
         return Patterns.EMAIL_ADDRESS.matcher(emailAddress).matches();
     }
 
+    /***
+     * check password length
+     * @param password user password
+     * @return true if password meet condition. false otherwise
+     */
     private boolean isPassword(String password) {
         return password.length() > 6; //todo - strengthen password
     }
@@ -177,6 +201,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private void attemptLogin() {
         getUserLoginInput();
         validateUserLoginInput(this.emailAddress, this.password);
+        //@Todo fix me later
         if (isValidUserInput) {
             Log.d(TAG, "isValidUserInput: user inputs are acceptable. now check internet before anything stupid");
             //do we have internet?
@@ -193,6 +218,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
+    /***
+     * login user by email and password
+     * @param emailAddress user email
+     * @param password user password
+     */
     private void authenticateUser(String emailAddress, String password) {
 //        mAuth.signInWithEmailAndPassword(emailAddress, password).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
 //            @Override

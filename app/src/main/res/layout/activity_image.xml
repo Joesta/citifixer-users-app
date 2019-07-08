@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#cdcdcd"
+    android:background="#F3EDED"
     tools:context=".activities.MainActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -19,7 +19,7 @@
         <ImageView
             android:id="@+id/potholeImageView"
             android:layout_width="250dp"
-            android:layout_height="300dp"
+            android:layout_height="250dp"
             android:layout_margin="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -27,56 +27,101 @@
 
         <TextView
             android:id="@+id/potholeDescription"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
+            android:layout_margin="8dp"
             android:fontFamily="monospace"
-            android:text="Description: Pothole"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:text="Description:"
+            android:textSize="15sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/potholeImageView" />
+            app:layout_constraintTop_toBottomOf="@id/potholeImageView"/>
+
+        <TextView
+            android:id="@+id/tvPotholeDescriptionText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:fontFamily="monospace"
+            android:text="Description"
+            android:textSize="15sp"
+            app:layout_constraintStart_toEndOf="@id/potholeDescription"
+            app:layout_constraintTop_toBottomOf="@id/potholeImageView"/>
 
         <TextView
             android:id="@+id/tvLat"
-            android:layout_width="match_parent"
+            android:layout_width="40dp"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
+            android:layout_margin="8dp"
             android:fontFamily="monospace"
-            android:text="Latitude"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:text="Lat: "
+            android:textSize="15sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/potholeDescription" />
 
         <TextView
-            android:id="@+id/tvLng"
-            android:layout_width="match_parent"
+            android:id="@+id/tvLatitudeText"
+            android:layout_width="320dp"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
+            android:layout_margin="8dp"
             android:fontFamily="monospace"
-            android:text="Longitude"
+            android:text="Lat"
+            android:textSize="15sp"
+            app:layout_constraintStart_toEndOf="@id/tvLat"
+            app:layout_constraintTop_toBottomOf="@id/potholeDescription" />
+
+
+
+        <TextView
+            android:id="@+id/tvLng"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:fontFamily="monospace"
+            android:text="Lng: "
             android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvLat" />
 
         <TextView
-            android:id="@+id/tvDate"
-            android:layout_width="match_parent"
+            android:id="@+id/tvLongitudeText"
+            android:layout_width="320dp"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
+            android:layout_margin="8dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="8dp"
             android:fontFamily="monospace"
-            android:text="Date"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:text="Lng"
+            android:textSize="15sp"
+            app:layout_constraintStart_toEndOf="@id/tvLng"
+            app:layout_constraintTop_toBottomOf="@id/tvLatitudeText" />
+
+        <TextView
+            android:id="@+id/tvDate"
+            android:layout_width="45dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:fontFamily="monospace"
+            android:text="Date:"
+            android:textSize="15sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvLng" />
 
+        <TextView
+            android:id="@+id/tvDateText"
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:fontFamily="monospace"
+            android:text="Lat"
+            android:textSize="15sp"
+            app:layout_constraintStart_toEndOf="@id/tvDate"
+            app:layout_constraintTop_toBottomOf="@id/tvLongitudeText"
+            />
+
         <Button
             android:id="@+id/btnUpload"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_marginStart="32dp"
             android:layout_marginTop="16dp"
             android:background="@drawable/ic_upload"
@@ -86,8 +131,8 @@
 
         <Button
             android:id="@+id/btnCancel"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="32dp"

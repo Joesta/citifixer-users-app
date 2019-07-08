@@ -7,19 +7,6 @@
     tools:context=".activities.SignUpActivity"
     android:background="@drawable/account_bg">
 
-
-    <!--<ImageView-->
-        <!--android:id="@+id/imageView"-->
-        <!--android:layout_width="200dp"-->
-        <!--android:layout_height="110dp"-->
-        <!--android:layout_marginTop="20dp"-->
-        <!--android:layout_marginBottom="16dp"-->
-        <!--android:src="@drawable/image"-->
-        <!--app:layout_constraintEnd_toEndOf="parent"-->
-        <!--app:layout_constraintStart_toStartOf="parent"-->
-        <!--app:layout_constraintTop_toTopOf="parent"-->
-        <!--app:layout_constraintVertical_bias="0.7" />-->
-
     <!--parent user inputs-->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/parentUserInput"
@@ -41,9 +28,11 @@
             android:drawableStart="@drawable/ic_person"
             android:drawablePadding="5dp"
             android:fontFamily="monospace"
+            android:inputType="text"
             android:hint="Name"
             android:textColorHint="#cdcdcd"
             android:textSize="15sp"
+            android:imeOptions="actionNext"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -57,6 +46,8 @@
             android:drawablePadding="5dp"
             android:fontFamily="monospace"
             android:hint="Surname"
+            android:inputType="text"
+            android:imeOptions="actionNext"
             android:textColorHint="#cdcdcd"
             android:textSize="15sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -93,6 +84,7 @@
             android:fontFamily="monospace"
             android:text="Gender"
             android:textColorHint="#cdcdcd"
+            android:imeOptions="actionNext"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.9"
@@ -131,7 +123,7 @@
                 android:drawablePadding="5dp"
                 android:textColor="#cdcdcd"
                 android:textSize="15sp"
-                android:layout_marginTop="25dp" />
+                android:layout_marginTop="35dp" />
         </DatePicker>
 
         <View
@@ -155,6 +147,7 @@
             android:drawablePadding="5dp"
             android:fontFamily="monospace"
             android:hint="ID Number"
+            android:imeOptions="actionNext"
             android:inputType="number"
             android:textColorHint="#cdcdcd"
             android:textSize="15sp"
@@ -172,6 +165,7 @@
             android:fontFamily="monospace"
             android:hint="Cell number"
             android:textSize="15sp"
+            android:imeOptions="actionNext"
             android:inputType="number"
             android:textColorHint="#cdcdcd"
             app:layout_constraintEnd_toEndOf="parent"
@@ -185,10 +179,12 @@
             android:layout_margin="5dp"
             android:drawableStart="@drawable/ic_email"
             android:drawablePadding="5dp"
+            android:inputType="textEmailAddress"
             android:fontFamily="monospace"
             android:hint="Email address"
             android:textColorHint="#cdcdcd"
             android:textSize="15sp"
+            android:imeOptions="actionNext"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textInputCellNumber" />
@@ -204,6 +200,8 @@
             android:drawablePadding="5dp"
             android:fontFamily="monospace"
             android:hint="Password"
+            android:inputType="textPassword"
+            android:imeOptions="actionDone"
             android:textColorHint="#cdcdcd"
             android:textSize="15sp"
             app:layout_constraintEnd_toEndOf="parent"
