@@ -67,7 +67,7 @@ public class PotholeImageCaptureActivity extends AppCompatActivity implements Vi
         setContentView(R.layout.activity_image);
 
         //get login details
-        userEmail = SharedPreferenceManager.getUserEmail(this);
+        userEmail = SharedPreferenceManager.getEmail(this);
         initUI();
         dispatchTakePictureIntent();
     }
@@ -128,12 +128,14 @@ public class PotholeImageCaptureActivity extends AppCompatActivity implements Vi
 
                             //save image uri
                             imageUri = Uri.fromFile(file);
-                            //@Todo - uncomment to get actual image exif gps data
                             final double[] imageCoordinates = getCoordinatesFromImageExit(file);
-                            //final double[] imageCoordinates = new double[]{-25.7499763, 28.2151983};
-                            Log.d(TAG, "onActivityResult: coordinates. Lat " + imageCoordinates[0] + " lng " + imageCoordinates[1]);
-                            coordinates = getCoordinates(imageCoordinates);
-                            setUIValues(scaled, coordinates);
+                            if (imageCoordinates != null) {
+                                //@Todo - uncomment to get actual image exif gps data
+                                //final double[] imageCoordinates = new double[]{-25.7499763, 28.2151983};
+                                Log.d(TAG, "onActivityResult: coordinates. Lat " + imageCoordinates[0] + " lng " + imageCoordinates[1]);
+                                coordinates = getCoordinates(imageCoordinates);
+                                setUIValues(scaled, coordinates);
+                            }
                         } // end bitmap nullable check
                     } // end resultCode check
                     break;
@@ -153,8 +155,6 @@ public class PotholeImageCaptureActivity extends AppCompatActivity implements Vi
     private void setUIValues(Bitmap scaled, Coordinates coordinates) {
         potholeImage.setImageBitmap(scaled); // set image
 
-        String dateInfo =
-                new SimpleDateFormat("yyyy-MM-dd_HHmmss", Locale.getDefault()).format(coordinates.getDate());
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
         final String potholeDescription = "Pothole";
@@ -196,8 +196,9 @@ public class PotholeImageCaptureActivity extends AppCompatActivity implements Vi
             e.printStackTrace();
             Log.d(TAG, "IOException: Error: " + e.getLocalizedMessage());
         } catch (NullPointerException npe) {
-            Utils.showToast(this, "Error. Failed to ready image metadata");
-            System.out.println("NullPointerException Error: " + npe.getLocalizedMessage());
+            Utils.showToast(this, "Error. Failed to read image metadata");
+//            System.out.println("NullPointerException Error: " + npe.getLocalizedMessage());
+            npe.printStackTrace();
         }
         return latlng;
     }
@@ -230,6 +231,8 @@ public class PotholeImageCaptureActivity extends AppCompatActivity implements Vi
         Toast.makeText(this, "Upload button tapped", Toast.LENGTH_SHORT).show();
         UserImpl userImp = new UserImpl(this);
         Pothole pothole = new Pothole();
+        Log.d(TAG, "addNewPothole: Latitude  " + coordinates.getLatitude());
+        Log.d(TAG, "addNewPothole: Longitude " + coordinates.getLongitude());
         pothole.setCoordinates(coordinates);
         pothole.setDescription("Pothole");
 

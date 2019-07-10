@@ -43,11 +43,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final String TAG = "MainActivity";
     private final RxPermissions rxPermissions = new RxPermissions(this); // where this is an Activity or Fragment instance
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    DrawerLayout mDrawer;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager layoutManager;
     private Disposable disposable;
-
     //navigation header widgets
     private TextView navHeaderName;
     private TextView navHeaderEmail;
@@ -59,27 +58,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         initUI();
-        loadUserPotholeReportsFromDb();
+        getUserPotholeReportsFromDatabase();
     }
 
     /***
      * get user reports from firebase database and
      * load them to display on the recycler view
      */
-    private void loadUserPotholeReportsFromDb() {
+    private void getUserPotholeReportsFromDatabase() {
+        final String email = SharedPreferenceManager.getEmail(MainActivity.this);
+        Log.d(TAG, "getUserPotholeReportsFromDatabase: Email address is " + email);
+
+        if (email == null) {
+            Log.d(TAG, "getUserPotholeReportsFromDatabase: User email is not found!.");
+            return;
+        }
+
         db.collection(Constants.USER_COLLECTION)
-                .document(SharedPreferenceManager.getUserEmail(MainActivity.this))
+                .document(email)
                 .get()
                 .addOnSuccessListener(MainActivity.this, documentSnapshot -> {
 
                     User user = documentSnapshot.toObject(User.class);
                     assert user != null;
 
-                    // set nav header info
-                    setNavHeaderInfo(user);
-
-                    // get user potholes
                     List<Pothole> potholeList = user.getPotholes();
+
+                    setNavHeaderInfo(user);
 
                     //instantiate pothole adapter
                     PotholeAdapter potholeAdapter = new PotholeAdapter(MainActivity.this, potholeList, user.getName());
@@ -90,6 +95,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * set navigation header info
+     *
      * @param user currently logged-in
      */
     private void setNavHeaderInfo(User user) {
@@ -112,10 +118,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Toolbar toolbar = getToolbar();
 
         // initializing drawer layout
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        mDrawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
+                this, mDrawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        mDrawer.addDrawerListener(toggle);
         toggle.syncState();
 
         // initializing navigation view and register item selected listener
@@ -136,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         recyclerView.setHasFixedSize(true);
 
         // initializing layout manager for recycler view
-        layoutManager = new LinearLayoutManager(MainActivity.this, RecyclerView.VERTICAL, false);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(MainActivity.this, RecyclerView.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
 
         // initializing floating action button
@@ -169,6 +175,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         disposable = rxPermissions
                 .request(Manifest.permission.CAMERA,
+                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.ACCESS_FINE_LOCATION,
                         Manifest.permission.READ_EXTERNAL_STORAGE,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .subscribe(granted -> {
@@ -213,8 +221,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int itemId = item.getItemId();
 
         if (itemId == R.id.nav_profile) {
-            Log.d(TAG, "onNavigationItemSelected: ");
             gotoUserProfileActivity();
+
         } else if (itemId == R.id.nav_reports) {
             viewReports();
 
@@ -228,8 +236,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             logout();
         }
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        //DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        mDrawer.closeDrawer(GravityCompat.START);
 
         return true;
     }
@@ -264,12 +272,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         finish();
     }
 
+    /**
+     * takes user to about app
+     */
     private void gotoAboutAppActivity() {
         NavUtil.moveToNextActivity(MainActivity.this, AboutActivity.class);
     }
 
+    /**
+     * share app
+     */
     private void shareApp() {
-
+        Utils.showToast(MainActivity.this, "Share menu is tapped");
     }
 
     /***

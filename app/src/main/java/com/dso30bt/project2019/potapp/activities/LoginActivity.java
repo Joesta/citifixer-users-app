@@ -77,7 +77,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
      * check is user is logged in before using the app
      */
     private void isUserLoggedIn() {
-        String userEmail = SharedPreferenceManager.getUserEmail(LoginActivity.this);
+        String userEmail = SharedPreferenceManager.getEmail(LoginActivity.this);
         if (!TextUtils.isEmpty(userEmail) || userEmail != null) {
             NavUtil.moveToNextActivity(LoginActivity.this, MainActivity.class);
             finish();

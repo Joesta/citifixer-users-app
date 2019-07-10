@@ -46,10 +46,10 @@ public class PotholeAdapter extends RecyclerView.Adapter<PotholeAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-
         Picasso
                 .get()
-                .load(potholeList.get(position).getPotholeUrl()).into(holder.potholeImageView);
+                .load(potholeList.get(position).getPotholeUrl())
+                .into(holder.potholeImageView);
 
         holder.descriptionTextValue.setText(potholeList.get(position).getDescription());
         holder.latitudeTextValue.setText(String.valueOf(potholeList.get(position).getCoordinates().getLatitude()));

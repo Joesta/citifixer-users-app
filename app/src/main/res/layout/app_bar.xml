@@ -28,7 +28,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        android:backgroundTint="#000000"
-        android:src="@drawable/ic_add_a_photo_black_24dp" />
+        android:backgroundTint="@android:color/transparent"
+        app:rippleColor="#FF0000"
+        android:backgroundTintMode="multiply"
+        android:src="@drawable/ic_camera" />
     <!--app:srcCompat="@android:drawable/ic_menu_camera"-->
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

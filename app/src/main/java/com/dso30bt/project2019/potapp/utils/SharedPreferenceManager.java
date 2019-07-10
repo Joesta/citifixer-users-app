@@ -8,7 +8,7 @@ import android.content.SharedPreferences;
  */
 public class SharedPreferenceManager {
     /***
-     * get auth_token of active user
+     * get user auth_token
      * @param ctx provides access to application resources
      * @return auth_token
      */
@@ -18,22 +18,21 @@ public class SharedPreferenceManager {
         return sp.getString(SharedPreferenceHelper.AUTH_TOKEN, "");
     }
 
-    public static String getUserEmail(Context ctx) {
+    public static String getEmail(Context ctx) {
         SharedPreferences sp = ctx.getSharedPreferences(SharedPreferenceHelper.LOGIN_INFO, Context.MODE_PRIVATE);
         return sp.getString(SharedPreferenceHelper.USER_EMAIL, null);
     }
 
-    public static void saveUserInfo(Context ctx, String userEmail, String username) {
+    public static void saveEmail(Context ctx, String userEmail) {
         SharedPreferences sp =
                 ctx.getSharedPreferences(SharedPreferenceHelper.LOGIN_INFO, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
-        editor.putString(SharedPreferenceHelper.USERNAME, username);
         editor.putString(SharedPreferenceHelper.USER_EMAIL, userEmail);
         editor.apply();
     }
 
 
-    public static String getUsername(Context ctx) {
+    public static String getName(Context ctx) {
         SharedPreferences sp
                 = ctx.getSharedPreferences(SharedPreferenceHelper.LOGIN_INFO, Context.MODE_PRIVATE);
         return sp.getString(SharedPreferenceHelper.USERNAME, null);

@@ -44,7 +44,7 @@ public class UserImpl implements IUserRepository {
      */
     public UserImpl(Context context) {
         this.context = context;
-        userEmail = SharedPreferenceManager.getUserEmail(context);
+        userEmail = SharedPreferenceManager.getEmail(context);
     }
 
     /***
@@ -100,8 +100,7 @@ public class UserImpl implements IUserRepository {
                 if (loginModel.getPassword().equals(mUser.getPassword())) {
 
                     Utils.showToast(context, "User logged in");
-                    SharedPreferenceManager.saveUserInfo(context, this.mUser.getEmail(), this.mUser.getName());
-                    System.out.println("Logged-in user is --> " + this.mUser.getName());
+                    SharedPreferenceManager.saveEmail(context, this.mUser.getEmail());
                     NavUtil.moveToNextActivity(context, MainActivity.class);
                     ((LoginActivity) context).finish();
 
@@ -129,7 +128,7 @@ public class UserImpl implements IUserRepository {
             if (documentSnapshot.exists()) {
                 Log.d(TAG, "addPotholeAndImage: document exists. add pothole for the mUser");
 
-                if (imageFile != null) {
+                if (imageFile != null && pothole != null && pothole.getCoordinates() != null) {
                     Uri imageUri = Uri.fromFile(imageFile);
                     String path = "potholes/" + UUID.randomUUID().toString() + imageUri.getLastPathSegment();
 
@@ -152,8 +151,10 @@ public class UserImpl implements IUserRepository {
                             Utils.showToast(context, "Report was send!");
 
                         }).addOnFailureListener(error -> Utils.showToast(context, "Error: " + error.getLocalizedMessage()));
-                        ;
+
                     }).addOnFailureListener(error -> Utils.showToast(context, "Error: " + error.getLocalizedMessage()));
+                } else {
+                    Utils.showToast(context, "An error occurred while trying to upload. Please retry!");
                 }
 
             } else {
