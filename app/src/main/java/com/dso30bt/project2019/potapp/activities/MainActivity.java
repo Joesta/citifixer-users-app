@@ -1,6 +1,7 @@
 package com.dso30bt.project2019.potapp.activities;
 
 import android.Manifest;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -10,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.baoyz.widget.PullRefreshLayout;
 import com.dso30bt.project2019.potapp.R;
 import com.dso30bt.project2019.potapp.adapters.PotholeAdapter;
 import com.dso30bt.project2019.potapp.models.Pothole;
@@ -148,6 +150,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // initializing floating action button
         FloatingActionButton fab = findViewById(R.id.fab);
         registerFab(fab);
+
+        PullRefreshLayout swipeRefreshLayout = (PullRefreshLayout) findViewById(R.id.swipeRefreshLayout);
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            getUserPotholeReportsFromDatabase();
+            swipeRefreshLayout.setRefreshing(false);
+        });
 
     }
 
