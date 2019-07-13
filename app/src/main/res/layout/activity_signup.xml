@@ -77,7 +77,7 @@
             android:id="@+id/spinnerGender"
             android:layout_width="230dp"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
+            android:layout_marginTop="5dp"
             android:drawableStart="@drawable/ic_person"
             android:drawablePadding="5dp"
             android:entries="@array/gender"
@@ -94,17 +94,65 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="0.9dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             android:background="#000"
-            android:layout_margin="10dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/spinnerGender"/>
+        <TextView
+            android:id="@+id/textLabelRole"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"
+            android:drawableStart="@drawable/ic_role"
+            android:drawablePadding="5dp"
+            android:fontFamily="monospace"
+            android:text="Role"
+            android:textColor="#cdcdcd"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.03"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textLabelGender" />
+
+        <Spinner
+            android:id="@+id/spinnerRole"
+            android:layout_width="230dp"
+            android:layout_marginTop="5dp"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_role"
+            android:drawablePadding="5dp"
+            android:entries="@array/roles"
+            android:fontFamily="monospace"
+            android:text="Gender"
+            android:textColorHint="#cdcdcd"
+            android:imeOptions="actionNext"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.9"
+            app:layout_constraintStart_toEndOf="@id/textLabelRole"
+            app:layout_constraintTop_toBottomOf="@id/spinnerGender"
+            tools:layout_editor_absoluteY="100dp" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.9dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:background="#000"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/spinnerRole"/>
 
         <DatePicker
             android:id="@+id/datePicker"
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginBottom="5dp"
             android:datePickerMode="spinner"
             android:layout_marginEnd="0dp"
             android:calendarViewShown="false"
@@ -112,7 +160,7 @@
             android:endYear="2019"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/spinnerGender">
+            app:layout_constraintTop_toBottomOf="@+id/spinnerRole">
             <TextView
                 android:layout_width="75dp"
                 android:layout_height="wrap_content"
@@ -137,7 +185,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/datePicker"/>
-
         <EditText
             android:id="@+id/textInputIdNumber"
             android:layout_width="match_parent"

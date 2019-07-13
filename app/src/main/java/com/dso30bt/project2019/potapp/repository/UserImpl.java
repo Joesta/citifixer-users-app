@@ -53,8 +53,14 @@ public class UserImpl implements IUserRepository {
      */
     @Override
     public void registerUser(User user) {
+        String role = user.getRole();
+        String collection =
+                role.equalsIgnoreCase("User") ? Constants.USER_COLLECTION : Constants.CONSTRUCTOR_COLLECTION;
+        Log.d(TAG, "registerUser: to collection of " + collection);
+
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        DocumentReference documentRef = db.collection(Constants.USER_COLLECTION).document(user.getEmail());
+        DocumentReference documentRef =
+                db.collection(collection).document(user.getEmail());
 
         documentRef.get()
                 .addOnSuccessListener((Activity) context, documentSnapshot -> {

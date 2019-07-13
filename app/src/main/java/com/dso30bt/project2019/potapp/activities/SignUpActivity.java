@@ -2,8 +2,6 @@ package com.dso30bt.project2019.potapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
@@ -18,10 +16,14 @@ import com.dso30bt.project2019.potapp.models.Pothole;
 import com.dso30bt.project2019.potapp.models.User;
 import com.dso30bt.project2019.potapp.models.UserReport;
 import com.dso30bt.project2019.potapp.repository.UserImpl;
+import com.dso30bt.project2019.potapp.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 
 /**
@@ -38,11 +40,13 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     private EditText textInputPassword;
     private EditText textInputIdNumber;
     private EditText textInputCell;
-    private Spinner spinner;
+    private Spinner spinnerGender;
+    private Spinner spinnerRole;
     private Button btnSingUp;
     private DatePicker datePicker;
 
     private String gender;
+    private String role;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,7 +67,8 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         textInputCell = findViewById(R.id.textInputCellNumber);
         textInputPassword = findViewById(R.id.textInputPassword);
         textInputIdNumber = findViewById(R.id.textInputIdNumber);
-        spinner = findViewById(R.id.spinnerGender);
+        spinnerGender = findViewById(R.id.spinnerGender);
+        spinnerRole = findViewById(R.id.spinnerRole);
         btnSingUp = findViewById(R.id.btnSignUp);
         datePicker = findViewById(R.id.datePicker);
     }
@@ -76,7 +81,8 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         String password = textInputPassword.getText().toString();
         String idNumber = textInputIdNumber.getText().toString();
         String cellNumber = textInputCell.getText().toString();
-        gender = spinner.getSelectedItem().toString();
+        gender = spinnerGender.getSelectedItem().toString();
+        role = spinnerRole.getSelectedItem().toString();
 
         validateInput(name, surname, emailAddress, password, idNumber, cellNumber);
     }
@@ -94,8 +100,14 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public void onClick(View v) {
-        getUserRegistrationInput();
-
+        int id = v.getId();
+        switch (id) {
+            case R.id.btnSignUp:
+                getUserRegistrationInput();
+                break;
+            default:
+                break;
+        }
     }
 
     private void validateInput(String name, String surname, String emailAddress, String password, String idNumber, String cellNumber) {
@@ -153,10 +165,11 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         if (cancel) {
             focusView.requestFocus();
         } else {
+            Utils.showToast(this, "Signup tapped");
             // let the genius stuff happen
             List<Pothole> potholesList = new ArrayList<>();
             List<UserReport> userReports = new ArrayList<>();
-            User user = new User(name, emailAddress, gender, surname, idNumber, password, cellNumber, potholesList, userReports);
+            User user = new User(name, emailAddress, gender, role, surname, idNumber, password, cellNumber, potholesList, userReports);
             UserImpl userImpl = new UserImpl(SignUpActivity.this);
             userImpl.registerUser(user);
         }
@@ -205,7 +218,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         int currentYear = calendar.get(Calendar.YEAR);
         int yearOBirth = datePicker.getYear();
         Log.d(TAG, "isAdult: " + yearOBirth);
-        Log.d(TAG, "isAdult: " + currentYear + " - " + yearOBirth+ " = " + (currentYear - yearOBirth >= 18));
+        Log.d(TAG, "isAdult: " + currentYear + " - " + yearOBirth + " = " + (currentYear - yearOBirth >= 18));
         return currentYear - yearOBirth >= 18; //true if 18 years and older
     }
 

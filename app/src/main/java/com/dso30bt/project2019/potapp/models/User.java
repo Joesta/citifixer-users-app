@@ -17,11 +17,11 @@ public class User {
     private String name;
     private String email;
     private String gender;
+    private String role;
     private String surname;
     private String IdNumber;
     private String password;
     private String cellNumber;
     private List<Pothole> potholes;
     private List<UserReport> userReport;
-
 }

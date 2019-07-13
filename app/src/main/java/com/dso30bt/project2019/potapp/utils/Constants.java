@@ -7,6 +7,8 @@ package com.dso30bt.project2019.potapp.utils;
 public class Constants {
     public static final int SPLASH_TIME = 2000;
     public static final String USER_COLLECTION = "users";
+    public static final String CONSTRUCTOR_COLLECTION = "constructors";
+    public static final String ENGINEER_COLLECTION = "engineers";
 
     private Constants() {
     }

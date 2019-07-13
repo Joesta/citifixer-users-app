@@ -163,7 +163,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
      * @return true if password meet condition. false otherwise
      */
     private boolean isPassword(String password) {
-        return password.length() > 6; //todo - strengthen password
+        return password.length() > 6; //@Todo - strengthen password
     }
 
     @Override
