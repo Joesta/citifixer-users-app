@@ -15,10 +15,12 @@ public class Constants {
 
     public static class DocumentFields {
         public static final String NAME = "name";
+        public static final String ROLE = "role";
         public static final String EMAIL = "email";
         public static final String GENDER = "gender";
         public static final String USER_ID = "userId";
         public static final String REPORTS = "reports";
+        public static final String ASSIGNED = "assigned";
         public static final String SURNAME = "surname";
         public static final String PASSWORD = "password";
         public static final String POTHOLES = "potholes";

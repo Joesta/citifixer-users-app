@@ -13,14 +13,16 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-class Constructor {
-    private String id;
+public class Constructor {
+//    private String id;
     private String firstName;
     private String lastName;
     private String role;
     private String cellNumber;
     private String idNumber;
     private String emailAddress;
+    private String password;
+    private String gender;
     private boolean assigned = false;
     private List<Pothole> potholeList;
 }

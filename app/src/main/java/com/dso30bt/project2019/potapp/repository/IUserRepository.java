@@ -14,7 +14,7 @@ import java.util.Map;
  */
 public interface IUserRepository {
 
-    void registerUser(User user);
+    void registerUser(Object obj);
 
     void deleteUser(String email);
 

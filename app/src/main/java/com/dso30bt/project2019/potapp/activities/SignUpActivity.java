@@ -14,9 +14,11 @@ import android.widget.Spinner;
 import com.dso30bt.project2019.potapp.R;
 import com.dso30bt.project2019.potapp.models.Pothole;
 import com.dso30bt.project2019.potapp.models.User;
+import com.dso30bt.project2019.potapp.models.Constructor;
 import com.dso30bt.project2019.potapp.models.UserReport;
 import com.dso30bt.project2019.potapp.repository.UserImpl;
 import com.dso30bt.project2019.potapp.utils.Utils;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -169,9 +171,26 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             // let the genius stuff happen
             List<Pothole> potholesList = new ArrayList<>();
             List<UserReport> userReports = new ArrayList<>();
-            User user = new User(name, emailAddress, gender, role, surname, idNumber, password, cellNumber, potholesList, userReports);
+            Constructor constructor = null;
+            User user = null;
+
+            //Not efficient way of doing things.
+            //@Todo - make use of generics to do thing better
+            if (role.equalsIgnoreCase("constructor")) {
+                 constructor = new Constructor(name,surname,role, cellNumber,idNumber,emailAddress, password,gender,false,potholesList);
+            } else {
+                 user = new User(name, emailAddress, gender, role, surname, idNumber, password, cellNumber, potholesList, userReports);
+            }
+
+            String uid = FirebaseAuth.getInstance().getUid();
+            Log.d(TAG, "validateInput: " + uid);
+//
             UserImpl userImpl = new UserImpl(SignUpActivity.this);
-            userImpl.registerUser(user);
+            if (user != null) {
+                userImpl.registerUser(user);
+            } else {
+                userImpl.registerUser(constructor);
+            }
         }
     }
 

@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.dso30bt.project2019.potapp.activities.LoginActivity;
 import com.dso30bt.project2019.potapp.activities.MainActivity;
+import com.dso30bt.project2019.potapp.models.Constructor;
 import com.dso30bt.project2019.potapp.models.LoginModel;
 import com.dso30bt.project2019.potapp.models.Pothole;
 import com.dso30bt.project2019.potapp.models.User;
@@ -23,7 +24,9 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -49,25 +52,43 @@ public class UserImpl implements IUserRepository {
 
     /***
      * register new user
-     * @param user new user
+     * @param object new user
      */
     @Override
-    public void registerUser(User user) {
-        String role = user.getRole();
+    public void registerUser(Object object) {
+        User user = null;
+        Constructor constructor = null;
+        String role = null;
+        String document = null;
+
+        final List<Object> obj = new ArrayList<>();
+
+        if (object instanceof User) {
+            user = (User) object;
+            obj.add(user);
+            role = user.getRole();
+            document = user.getEmail();
+        } else {
+            constructor = (Constructor) object;
+            obj.add(constructor);
+            role = constructor.getRole();
+            document = constructor.getEmailAddress();
+        }
+
         String collection =
                 role.equalsIgnoreCase("User") ? Constants.USER_COLLECTION : Constants.CONSTRUCTOR_COLLECTION;
         Log.d(TAG, "registerUser: to collection of " + collection);
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference documentRef =
-                db.collection(collection).document(user.getEmail());
+                db.collection(collection).document(document);
 
         documentRef.get()
                 .addOnSuccessListener((Activity) context, documentSnapshot -> {
                     if (documentSnapshot.exists()) {
                         Utils.showToast(context, "User already exist!");
                     } else {
-                        documentRef.set(getMap(user)).addOnSuccessListener(aVoid -> {
+                        documentRef.set(getMap(obj.get(0))).addOnSuccessListener(aVoid -> {
                             Utils.showToast(context, "User Registered");
                         }).addOnFailureListener(error -> Utils.showToast(context, "Error " + error.getLocalizedMessage()));
                     }
@@ -171,20 +192,44 @@ public class UserImpl implements IUserRepository {
 
     /***
      * create map from user object
-     * @param user to create map from
+     * @param obj to create map from
      * @return Map
      */
-    private Map<String, Object> getMap(User user) {
+    private Map<String, Object> getMap(Object obj) {
         Map<String, Object> userMap = new HashMap<>();
-        userMap.put(Constants.DocumentFields.NAME, user.getName());
-        userMap.put(Constants.DocumentFields.CELL_NUMBER, user.getCellNumber());
-        userMap.put(Constants.DocumentFields.PASSWORD, user.getPassword());
-        userMap.put(Constants.DocumentFields.EMAIL, user.getEmail());
-        userMap.put(Constants.DocumentFields.GENDER, user.getGender());
-        userMap.put(Constants.DocumentFields.SURNAME, user.getSurname());
-        userMap.put(Constants.DocumentFields.ID_NUMBER, user.getIdNumber());
-        userMap.put(Constants.DocumentFields.POTHOLES, user.getPotholes());
-        userMap.put(Constants.DocumentFields.REPORTS, user.getUserReport());
+
+        /**
+         * this is a very baaaad way of implementing things
+         * @todo - will change this to an efficient implementation
+         */
+        if (obj instanceof User) {
+            User user = (User) obj;
+
+            userMap.put(Constants.DocumentFields.NAME, user.getName());
+            userMap.put(Constants.DocumentFields.CELL_NUMBER, user.getCellNumber());
+            userMap.put(Constants.DocumentFields.PASSWORD, user.getPassword());
+            userMap.put(Constants.DocumentFields.EMAIL, user.getEmail());
+            userMap.put(Constants.DocumentFields.GENDER, user.getGender());
+            userMap.put(Constants.DocumentFields.ROLE, user.getRole());
+            userMap.put(Constants.DocumentFields.SURNAME, user.getSurname());
+            userMap.put(Constants.DocumentFields.ID_NUMBER, user.getIdNumber());
+            userMap.put(Constants.DocumentFields.POTHOLES, user.getPotholes());
+        } else {
+
+            Constructor constructor = (Constructor) obj;
+            userMap.put(Constants.DocumentFields.NAME, constructor.getFirstName());
+            userMap.put(Constants.DocumentFields.CELL_NUMBER, constructor.getCellNumber());
+            userMap.put(Constants.DocumentFields.PASSWORD, constructor.getPassword());
+            userMap.put(Constants.DocumentFields.EMAIL, constructor.getEmailAddress());
+            userMap.put(Constants.DocumentFields.GENDER, constructor.getGender());
+            userMap.put(Constants.DocumentFields.ASSIGNED, constructor.isAssigned());
+            userMap.put(Constants.DocumentFields.ROLE, constructor.getRole());
+            userMap.put(Constants.DocumentFields.SURNAME, constructor.getLastName());
+            userMap.put(Constants.DocumentFields.ID_NUMBER, constructor.getIdNumber());
+            userMap.put(Constants.DocumentFields.POTHOLES, constructor.getPotholeList());
+
+        }
+
 
         return userMap;
     }
