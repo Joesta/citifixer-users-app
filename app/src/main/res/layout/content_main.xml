@@ -30,4 +30,39 @@
             android:scrollbars="none"/>
     </com.baoyz.widget.PullRefreshLayout>
 
+
+    <ListView
+        android:id="@+id/lvMain"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:background="@drawable/main_2"
+        android:clipToPadding="false"
+        android:divider="@color/colorPrimaryDark"
+        android:dividerHeight="2dp"
+        android:paddingBottom="16dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="16dp"
+        android:visibility="gone">
+
+    </ListView>
+
+    <ListView
+        android:id="@+id/lvConstructorPothole"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:background="#99000000"
+        android:clipToPadding="false"
+        android:divider="@color/colorPrimaryDark"
+        android:dividerHeight="2dp"
+        android:paddingBottom="16dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="16dp"
+        android:visibility="gone">
+
+    </ListView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

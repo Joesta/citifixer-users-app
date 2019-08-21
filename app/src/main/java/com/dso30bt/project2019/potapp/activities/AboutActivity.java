@@ -7,6 +7,7 @@ import android.widget.TextView;
 import com.dso30bt.project2019.potapp.BuildConfig;
 import com.dso30bt.project2019.potapp.R;
 import com.dso30bt.project2019.potapp.utils.NavUtil;
+import com.dso30bt.project2019.potapp.utils.Utils;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;

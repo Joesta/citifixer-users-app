@@ -103,6 +103,22 @@ public class IDNumberValidatorUtility {
         return new IDNumberDetails(idNumber, birthDate, male, citizen, true);
     }
 
+    public static Date compareDateTo(String dateToCompare) {
+        int year = Integer.parseInt(dateToCompare.substring(0, 4));
+
+        int month = Integer.parseInt(dateToCompare.substring(4, 6));
+        int day = Integer.parseInt(dateToCompare.substring(6, 8));
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(0);
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, month - 1);
+        calendar.set(Calendar.DAY_OF_MONTH, day);
+
+        return calendar.getTime();
+    }
+
+
     public static class IDNumberDetails {
         private String idNumber;
         private boolean valid;

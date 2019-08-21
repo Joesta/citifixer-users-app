@@ -7,8 +7,8 @@ android {
         applicationId "com.dso30bt.project2019.potapp"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 5
-        versionName "2.0.2-rc-3"
+        versionCode 6
+        versionName "2.0.4-rc-5"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
@@ -22,6 +22,8 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    useLibrary 'org.apache.http.legacy'
 }
 
 dependencies {
@@ -53,8 +55,16 @@ dependencies {
     implementation 'androidx.exifinterface:exifinterface:1.0.0-beta01'
     implementation 'com.ramotion.foldingcell:folding-cell:1.2.3'
     implementation 'com.baoyz.pullrefreshlayout:library:1.2.0'
+    implementation 'com.itextpdf:itextg:5.5.10'
 
     //circular image
     implementation 'de.hdodenhof:circleimageview:3.0.0'
+
+    //loading button
+    implementation 'br.com.simplepass:loading-button-android:1.14.0'
+
+    // snackbar
+    implementation 'com.github.matecode:Snacky:1.1.4'
+    implementation 'com.google.android.material:material:1.0.0'
 }
 apply plugin: 'com.google.gms.google-services'

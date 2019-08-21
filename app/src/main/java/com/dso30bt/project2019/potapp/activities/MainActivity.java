@@ -1,28 +1,30 @@
 package com.dso30bt.project2019.potapp.activities;
 
 import android.Manifest;
-import android.graphics.Color;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baoyz.widget.PullRefreshLayout;
 import com.dso30bt.project2019.potapp.R;
-import com.dso30bt.project2019.potapp.adapters.PotholeAdapter;
-import com.dso30bt.project2019.potapp.models.Pothole;
-import com.dso30bt.project2019.potapp.models.User;
-import com.dso30bt.project2019.potapp.utils.Constants;
+import com.dso30bt.project2019.potapp.models.Constructor;
+import com.dso30bt.project2019.potapp.models.enums.UserEnum;
 import com.dso30bt.project2019.potapp.utils.NavUtil;
 import com.dso30bt.project2019.potapp.utils.SharedPreferenceManager;
-import com.dso30bt.project2019.potapp.utils.Utils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.squareup.picasso.Picasso;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.util.List;
@@ -41,11 +43,13 @@ import io.reactivex.disposables.Disposable;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,
         NavigationView.OnNavigationItemSelectedListener {
 
-    private static final int PERMISSION_REQUEST_CODE = 1;
+    private static final int PERMISSION_CAMERA_REQUEST_CODE = 1;
+    private static final int PERMISSION_PDF_REQUEST_CODE = 22;
     private static final String TAG = "MainActivity";
     private final RxPermissions rxPermissions = new RxPermissions(this); // where this is an Activity or Fragment instance
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     DrawerLayout mDrawer;
+
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
     private Disposable disposable;
@@ -53,6 +57,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView navHeaderName;
     private TextView navHeaderEmail;
     private ImageView headerImageProPic;
+    private Menu navMenu;
+    private PullRefreshLayout swipeRefreshLayout;
+    private List<Constructor> constructorList = null;
+    private ListView lvMain;
+    private ListView lvConstructorPotholes;
+    private ProgressBar progressBarMain;
+    //array list adapter
+    private ArrayAdapter<Constructor> constructorArrayAdapter;
+    private String collection = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,56 +74,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         initUI();
-        getUserPotholeReportsFromDatabase();
+
+        int userType = SharedPreferenceManager.getFlag(this);
+        setUserTypeTitle(userType);
+
+
+        //getUserPotholeReportsFromDatabase();
     }
 
-    /***
-     * get user reports from firebase database and
-     * load them to display on the recycler view
-     */
-    private void getUserPotholeReportsFromDatabase() {
-        final String email = SharedPreferenceManager.getEmail(MainActivity.this);
-        Log.d(TAG, "getUserPotholeReportsFromDatabase: Email address is " + email);
-
-        if (email == null) {
-            Log.d(TAG, "getUserPotholeReportsFromDatabase: User email is not found!.");
-            return;
+    private void setUserTypeTitle(int userType) {
+        if (userType == UserEnum.CONSTRUCTOR.value) {
+            this.setTitle("Reports ( 0 )");
+            lvConstructorPotholes.setVisibility(View.VISIBLE);
         }
-
-        db.collection(Constants.USER_COLLECTION)
-                .document(email)
-                .get()
-                .addOnSuccessListener(MainActivity.this, documentSnapshot -> {
-
-                    User user = documentSnapshot.toObject(User.class);
-                    assert user != null;
-
-                    List<Pothole> potholeList = user.getPotholes();
-
-                    setNavHeaderInfo(user);
-
-                    //instantiate pothole adapter
-                    PotholeAdapter potholeAdapter = new PotholeAdapter(MainActivity.this, potholeList, user.getName());
-                    recyclerView.setAdapter(potholeAdapter);
-
-                }).addOnFailureListener(error -> Utils.showToast(MainActivity.this, "Error: " + error.getLocalizedMessage()));
     }
 
-    /**
-     * set navigation header info
-     *
-     * @param user currently logged-in
-     */
-    private void setNavHeaderInfo(User user) {
-        navHeaderName.setText(user.getName());
-        navHeaderEmail.setText(user.getEmail());
+    private void setNavHeaderInfo(String name, String email, String... imageUrl) {
 
-        //@Todo uncomment when users are able to upload their profile picture
-        // set navigation header image
-//        Picasso
-//                .get()
-//                .load(user.getImageUrl)
-//                .into(headerImageProPic);
+        navHeaderName.setText(name);
+        navHeaderEmail.setText(email);
+
+        if (imageUrl.length > 0) {
+            // set navigation header image
+            Picasso
+                    .get()
+                    .load(imageUrl[0])
+                    .into(headerImageProPic);
+        }
     }
 
     /**
@@ -129,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // initializing navigation view and register item selected listener
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
+        navMenu = navigationView.getMenu();
 
         // get header layout from navigation view
         LinearLayout navHeaderParentLayout = (LinearLayout) navigationView.getHeaderView(0);
@@ -144,18 +135,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         recyclerView.setHasFixedSize(true);
 
         // initializing layout manager for recycler view
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(MainActivity.this, RecyclerView.VERTICAL, false);
+        RecyclerView.LayoutManager layoutManager
+                = new LinearLayoutManager(MainActivity.this, RecyclerView.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
 
         // initializing floating action button
         FloatingActionButton fab = findViewById(R.id.fab);
-        registerFab(fab);
+        registerListenerOnFab(fab);
 
-        PullRefreshLayout swipeRefreshLayout = (PullRefreshLayout) findViewById(R.id.swipeRefreshLayout);
+
+        swipeRefreshLayout = (PullRefreshLayout) findViewById(R.id.swipeRefreshLayout);
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            getUserPotholeReportsFromDatabase();
+            // getUserPotholeReportsFromDatabase();
             swipeRefreshLayout.setRefreshing(false);
         });
+
+        // list view
+        lvMain = findViewById(R.id.lvMain);
+        //progressBarMain = findViewById(R.id.progressBarMain);
+
+        lvConstructorPotholes = findViewById(R.id.lvConstructorPothole);
 
     }
 
@@ -173,7 +172,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * register floating action button to click listener
      * @param fab to register click listener to
      */
-    private void registerFab(FloatingActionButton fab) {
+    private void registerListenerOnFab(FloatingActionButton fab) {
         fab.setOnClickListener(this);
     }
 
@@ -209,18 +208,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 new String[]{Manifest.permission.CAMERA,
                         Manifest.permission.READ_EXTERNAL_STORAGE,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                PERMISSION_REQUEST_CODE);
+                PERMISSION_CAMERA_REQUEST_CODE);
     }
 
     @Override
     protected void onPause() {
+        super.onPause();
         Log.d(TAG, "onPause:");
         if (disposable != null) {
             if (!disposable.isDisposed()) {
                 disposable.dispose();
             }
         }
-        super.onPause();
     }
 
     @Override
@@ -268,7 +267,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * logout user and clear stored user information saved locally
      */
     private void logout() {
-        SharedPreferenceManager.clearSavedLoginInfo(MainActivity.this);
         gotoLogin();
     }
 
@@ -276,6 +274,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * login
      */
     private void gotoLogin() {
+        SharedPreferenceManager.clearSavedLoginInfo(MainActivity.this);
         NavUtil.moveToNextActivity(MainActivity.this, LoginActivity.class);
         finish();
     }
@@ -291,13 +290,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * share app
      */
     private void shareApp() {
-        Utils.showToast(MainActivity.this, "Share menu is tapped");
+        Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+        sharingIntent.putExtra(Intent.EXTRA_TEXT, "Try City-Fixer App for convenient way of locating and fixing Potholes");
+        sharingIntent.setType("text/plain");
+        startActivity(sharingIntent);
     }
 
     /***
      * view reports
      */
     private void viewReports() {
-
     }
+
 }

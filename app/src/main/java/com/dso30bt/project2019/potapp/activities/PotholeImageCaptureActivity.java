@@ -12,7 +12,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.dso30bt.project2019.potapp.R;
 import com.dso30bt.project2019.potapp.models.Coordinates;
@@ -120,8 +119,8 @@ public class PotholeImageCaptureActivity extends AppCompatActivity implements Vi
                 case REQUEST_TAKE_PHOTO: {
                     if (resultCode == RESULT_OK) {
                         File file = new File(currentPhotoPath);
-                        Bitmap bitmap = MediaStore.Images.Media
-                                .getBitmap(getContentResolver(), Uri.fromFile(file));
+                        Bitmap bitmap
+                                = MediaStore.Images.Media.getBitmap(getContentResolver(), Uri.fromFile(file));
                         if (bitmap != null) {
                             int nh = (int) (bitmap.getHeight() * (512.0 / bitmap.getWidth()));
                             Bitmap scaled = Bitmap.createScaledBitmap(bitmap, 512, nh, true);
@@ -149,7 +148,7 @@ public class PotholeImageCaptureActivity extends AppCompatActivity implements Vi
     }
 
     private Coordinates getCoordinates(double[] paramCoordinates) {
-        return new Coordinates(new Date(), paramCoordinates[0], paramCoordinates[1]);
+        return new Coordinates(1, paramCoordinates[0], paramCoordinates[1]);
     }
 
     private void setUIValues(Bitmap scaled, Coordinates coordinates) {
@@ -228,17 +227,14 @@ public class PotholeImageCaptureActivity extends AppCompatActivity implements Vi
     }
 
     private void addNewPothole() {
-        Toast.makeText(this, "Upload button tapped", Toast.LENGTH_SHORT).show();
         UserImpl userImp = new UserImpl(this);
         Pothole pothole = new Pothole();
-        Log.d(TAG, "addNewPothole: Latitude  " + coordinates.getLatitude());
-        Log.d(TAG, "addNewPothole: Longitude " + coordinates.getLongitude());
         pothole.setCoordinates(coordinates);
-        pothole.setDescription("Pothole");
+        //pothole.setDescription("Pothole");
 
         File imageFile = new File(currentPhotoPath);
         //add pothole
-        userImp.addPotholeAndImage(pothole, imageFile);
+        //userImp.addPotholeAndImage(pothole, imageFile);
 
     }
 

@@ -36,7 +36,6 @@
         <activity
             android:name=".activities.MainActivity"
             android:label="Reports"
-            android:launchMode="singleTop"
             android:noHistory="true"
             android:theme="@style/AppTheme.NoActionBar" />
 
@@ -63,12 +62,25 @@
         <!-- Profile activity -->
         <activity
             android:name=".activities.UserProfileActivity"
+            android:launchMode="singleTop"
             android:label="Profile"
             android:parentActivityName=".activities.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.MainActivity" />
         </activity>
+
+        <!-- Constructor details activity -->
+        <activity
+            android:name=".activities.ConstructorDetailsActivity"
+            android:label="Constructor details"
+            android:parentActivityName=".activities.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MainActivity" />
+        </activity>
+
+        <activity android:name=".activities.DietActivity"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"

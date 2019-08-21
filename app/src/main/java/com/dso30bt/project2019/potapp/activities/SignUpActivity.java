@@ -12,17 +12,18 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.dso30bt.project2019.potapp.R;
-import com.dso30bt.project2019.potapp.models.Pothole;
-import com.dso30bt.project2019.potapp.models.User;
-import com.dso30bt.project2019.potapp.models.Constructor;
-import com.dso30bt.project2019.potapp.models.UserReport;
+import com.dso30bt.project2019.potapp.models.Person;
+import com.dso30bt.project2019.potapp.models.Role;
 import com.dso30bt.project2019.potapp.repository.UserImpl;
+import com.dso30bt.project2019.potapp.utils.Constants;
+import com.dso30bt.project2019.potapp.utils.IDNumberValidatorUtility;
+import com.dso30bt.project2019.potapp.utils.PasswordValidator;
 import com.dso30bt.project2019.potapp.utils.Utils;
-import com.google.firebase.auth.FirebaseAuth;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -35,25 +36,40 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
     private static final String TAG = "SignUpActivity";
 
-    //ui
+    // widgets
+    /*edit text*/
     private EditText textInputName;
     private EditText textInputSurname;
     private EditText textInputEmailAddress;
     private EditText textInputPassword;
     private EditText textInputIdNumber;
     private EditText textInputCell;
+    private EditText textInputConfirmPassword;
+
+    /*spinner*/
     private Spinner spinnerGender;
     private Spinner spinnerRole;
+
+    /*button*/
     private Button btnSingUp;
+
+    /*date picker*/
     private DatePicker datePicker;
 
+    /*vars*/
     private String gender;
     private String role;
+    private String status;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
+
+        //gives constructor default status
+        status = getResources()
+                .getStringArray(R.array.constructor_status)[0];
+
         initUI();
         registerButton();
     }
@@ -69,6 +85,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         textInputCell = findViewById(R.id.textInputCellNumber);
         textInputPassword = findViewById(R.id.textInputPassword);
         textInputIdNumber = findViewById(R.id.textInputIdNumber);
+        textInputConfirmPassword = findViewById(R.id.textInputConfirmPassword);
         spinnerGender = findViewById(R.id.spinnerGender);
         spinnerRole = findViewById(R.id.spinnerRole);
         btnSingUp = findViewById(R.id.btnSignUp);
@@ -77,16 +94,17 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
     private void getUserRegistrationInput() {
         //members
-        String name = textInputName.getText().toString();
-        String surname = textInputSurname.getText().toString();
+        String firstName = textInputName.getText().toString();
+        String lastName = textInputSurname.getText().toString();
+        gender = spinnerGender.getSelectedItem().toString();
+        String idNumber = textInputIdNumber.getText().toString();
         String emailAddress = textInputEmailAddress.getText().toString();
         String password = textInputPassword.getText().toString();
-        String idNumber = textInputIdNumber.getText().toString();
+        String confirmPassword = textInputConfirmPassword.getText().toString();
         String cellNumber = textInputCell.getText().toString();
-        gender = spinnerGender.getSelectedItem().toString();
         role = spinnerRole.getSelectedItem().toString();
 
-        validateInput(name, surname, emailAddress, password, idNumber, cellNumber);
+        validateInput(firstName, lastName, emailAddress, password, confirmPassword, idNumber, cellNumber);
     }
 
     @Override
@@ -112,125 +130,138 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    private void validateInput(String name, String surname, String emailAddress, String password, String idNumber, String cellNumber) {
+    private void validateInput(String firstName, String lastName, String emailAddress, String password, String confirmPassword, String idNumber, String cellNumber) {
         View focusView = null;
         boolean cancel = false;
 
-        if (TextUtils.isEmpty(name) || TextUtils.getTrimmedLength(name) == 0) {
+        PasswordValidator passwordValidator = new PasswordValidator();
+
+        if (TextUtils.isEmpty(firstName) || TextUtils.getTrimmedLength(firstName) == 0) {
             focusView = textInputName;
             cancel = true;
             textInputName.setError("Name is required");
-        } else if (TextUtils.isEmpty(surname) || TextUtils.getTrimmedLength(surname) == 0) {
+
+        } else if (!isFirstNameValid(firstName)) {
+            focusView = textInputName;
+            cancel = true;
+            textInputName.setError("First name must contain only alphanumeric and at least 3 characters long");
+
+        } else if (TextUtils.isEmpty(lastName) || TextUtils.getTrimmedLength(lastName) == 0) {
             focusView = textInputSurname;
             cancel = true;
             textInputSurname.setError("Surname is required");
-        } else if (TextUtils.isEmpty(idNumber) || TextUtils.getTrimmedLength(idNumber) == 0) {
-            focusView = textInputIdNumber;
+
+        } else if (!isLastNameValid(lastName)) {
+            focusView = textInputSurname;
             cancel = true;
-            textInputIdNumber.setError("ID Number is required");
-        } else if (!isIdNumber(idNumber)) {
-            focusView = textInputIdNumber;
-            cancel = true;
-            textInputIdNumber.setError("ID Number must be 13 digits long");
+            textInputSurname.setError("Last name must contain only alphanumeric and at least 3 characters long. E.g Doe");
+
         } else if (!isAdult()) {
             focusView = textInputIdNumber;
             cancel = true;
             textInputIdNumber.setError("You must be 18 year older.");
-//        } else if (!isYearOfBirthValid(TextUtils.substring(idNumber, 0, 6))
-//                && isSACitizen(idNumber)) {
-//
-//            focusView = textInputIdNumber;
-//            cancel = true;
-//            textInputIdNumber.setError("Invalid ID Number or Date of birth does not match!");
+
+        } else if (TextUtils.isEmpty(idNumber) || TextUtils.getTrimmedLength(idNumber) == 0) {
+            focusView = textInputIdNumber;
+            cancel = true;
+            textInputIdNumber.setError("ID Number is required");
+
+        } else if (!isIdNumber(idNumber)) {
+            focusView = textInputIdNumber;
+            cancel = true;
+            textInputIdNumber.setError("ID Number must be 13 digits long");
+
+        } else if (!IDNumberValidatorUtility.extractInformation(idNumber).isValid()) {
+            focusView = textInputIdNumber;
+            cancel = true;
+            textInputIdNumber.setError("Invalid ID Number");
+
+        } else if (!gender.equals(getGender(idNumber))) {
+            Utils.showToast(this, "Gender does not match!");
+            return;
+
+        } else if (IDNumberValidatorUtility.extractInformation(idNumber).getBirthDate()
+                .compareTo(IDNumberValidatorUtility.compareDateTo(getUserDoB())) != 0) {
+            Utils.showToast(this, "Date of Birth does not match ID!");
+            return;
 
         } else if (TextUtils.isEmpty(cellNumber) || TextUtils.getTrimmedLength(cellNumber) == 0) {
             focusView = textInputCell;
             cancel = true;
             textInputCell.setError("Cell number is required");
-        } else if (!isCellNumber(cellNumber)) {
+
+        } else if (!isCellNumberLength(cellNumber)) {
             focusView = textInputCell;
             cancel = true;
             textInputCell.setError("Cell must be 10 digits long");
+
+        } else if (!isCellNumberPrefix(cellNumber)) {
+            focusView = textInputCell;
+            cancel = true;
+            textInputCell.setError("Invalid cell number!");
+
         } else if (TextUtils.isEmpty(emailAddress) || TextUtils.getTrimmedLength(emailAddress) == 0) {
             focusView = textInputEmailAddress;
             cancel = true;
             textInputEmailAddress.setError("Email is required");
+
         } else if (!isEmail(emailAddress)) {
             focusView = textInputEmailAddress;
             cancel = true;
             textInputEmailAddress.setError("Invalid Email Address");
+
         } else if (TextUtils.isEmpty(password) || TextUtils.getTrimmedLength(password) == 0) {
             focusView = textInputPassword;
             cancel = true;
+            textInputPassword.setError("Password is required");
+
+        } else if (!passwordValidator.validate(password)) {
+            focusView = textInputPassword;
+            cancel = true;
+            textInputPassword.setError("Invalid password combination. \nPassword require at least 8 mixed characters. E.g n!k@sn1Kos");
+        } else {
+            if (!password.equalsIgnoreCase(confirmPassword)) {
+                focusView = textInputConfirmPassword;
+                cancel = true;
+                textInputConfirmPassword.setError("Password do not match!");
+            }
         }
 
         if (cancel) {
             focusView.requestFocus();
+
         } else {
-            Utils.showToast(this, "Signup tapped");
-            // let the genius stuff happen
-            List<Pothole> potholesList = new ArrayList<>();
-            List<UserReport> userReports = new ArrayList<>();
-            Constructor constructor = null;
-            User user = null;
+            // create role object
+            Role userRole = Utils.generateRole(role);
+            String dob = getUserDoB();
+            // create a person [ Road User or Constructor based on role ]
+            Person person = Utils.generatePerson(firstName, lastName, gender, idNumber, dob, userRole, "", password, emailAddress, cellNumber);
 
-            //Not efficient way of doing things.
-            //@Todo - make use of generics to do thing better
-            if (role.equalsIgnoreCase("constructor")) {
-                 constructor = new Constructor(name,surname,role, cellNumber,idNumber,emailAddress, password,gender,false,potholesList);
-            } else {
-                 user = new User(name, emailAddress, gender, role, surname, idNumber, password, cellNumber, potholesList, userReports);
-            }
-
-            String uid = FirebaseAuth.getInstance().getUid();
-            Log.d(TAG, "validateInput: " + uid);
-//
             UserImpl userImpl = new UserImpl(SignUpActivity.this);
-            if (user != null) {
-                userImpl.registerUser(user);
-            } else {
-                userImpl.registerUser(constructor);
-            }
+            userImpl.registerUser(person);
+
         }
     }
 
-    private boolean isYearOfBirthValid(String yearOfBirth) {
-
+    private String getUserDoB() {
         int year = datePicker.getYear();
-        Log.d(TAG, "isYearOfBirthValid: Year of birth " + yearOfBirth);
-        Log.d(TAG, "isYearOfBirthValid: formatted year " + year);
-
-        int formattedYear = Integer.valueOf(TextUtils.substring(String.valueOf(year), 2, 4));
-        Log.d(TAG, "isYearOfBirthValid: formatted year " + formattedYear);
         int month = datePicker.getMonth() + 1;
-        Log.d(TAG, "isYearOfBirthValid: datePickerMonth " + month);
-        Log.d(TAG, "isYearOfBirthValid: param YoB month " + TextUtils.substring(yearOfBirth, 2, 4));
         int day = datePicker.getDayOfMonth();
-        Log.d(TAG, "isYearOfBirthValid: day of month " + day);
 
-        return (formattedYear == Integer.valueOf(TextUtils.substring(yearOfBirth, 0, 2)))
-                && (month == Integer.valueOf(TextUtils.substring(yearOfBirth, 2, 4)))
-                && (day == Integer.valueOf(TextUtils.substring(yearOfBirth, 4, 6))
-                && Integer.valueOf(TextUtils.substring(yearOfBirth, 11, 12)) == 8);
+        // prefix month 1 - 9 with 0;
+        String strMonth = (month < 10) ? "0" + month : String.valueOf(month);
+
+        // prefix day 1 - 9 with 0;
+        String strDay = (day < 10) ? "0" + day : String.valueOf(day);
+
+        return year + "" + strMonth + "" + strDay;
     }
 
-    private boolean isMonthOfBirthValid(int monthOfBirth) {
-        return monthOfBirth > 0;
+    private String getGender(String idNumber) {
+        boolean isMale = IDNumberValidatorUtility.extractInformation(idNumber).isMale();
+        return isMale ? "Male" : "Female";
     }
 
-    private boolean isDayOfBirthValid(int dayOfBirth) {
-        return dayOfBirth > 0;
-    }
-
-    private String getGender(int ssss) {
-        // Female - 0000 - 4999
-        // Male   - 5000 - 9999
-        return ssss >= 5000 ? "Male" : "Female";
-    }
-
-    private boolean isSACitizen(String idNumber) {
-        return Integer.valueOf(TextUtils.substring(idNumber, 10, 11)) == 0;
-    }
 
     private boolean isAdult() {
         Calendar calendar = Calendar.getInstance();
@@ -249,7 +280,24 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         return Patterns.EMAIL_ADDRESS.matcher(emailAddress).matches();
     }
 
-    private boolean isCellNumber(String cellNumber) {
+    private boolean isCellNumberLength(String cellNumber) {
         return cellNumber.length() == 10;
+    }
+
+    private boolean isCellNumberPrefix(String cellNumber) {
+        List<String> cellPrefixList = Arrays.asList(getResources().getStringArray(R.array.cellphone_prefix));
+        return cellPrefixList.contains(cellNumber.substring(0, 3));
+    }
+
+    private boolean isFirstNameValid(String firstName) {
+        Pattern pattern = Pattern.compile(Constants.NAMES_PATTERN);
+        return pattern.matcher(firstName).matches();
+
+    }
+
+    private boolean isLastNameValid(String lastName) {
+        Pattern pattern = Pattern.compile(Constants.NAMES_PATTERN);
+        return pattern.matcher(lastName).matches();
+
     }
 }

@@ -1,27 +1,26 @@
 package com.dso30bt.project2019.potapp.models;
 
-import java.util.List;
-
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * Created by Joesta on 2019/05/29.
  */
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class User {
-    private String name;
-    private String email;
-    private String gender;
-    private String role;
-    private String surname;
-    private String IdNumber;
-    private String password;
-    private String cellNumber;
-    private List<Pothole> potholes;
-    private List<UserReport> userReport;
+@ToString
+@EqualsAndHashCode(callSuper=false)
+public class User extends Person {
+    private int id;
+    private String imageUrl;
+
+    public User() {
+        super();
+    }
+
+    public User(String firstName, String lastName, String gender, String idNumber, String dob, String password, String emailAddress, Role role, String imageUrl, String cellNumber) {
+        super(firstName, lastName, gender, idNumber, dob, password, emailAddress, role, cellNumber);
+        this.imageUrl = imageUrl;
+    }
 }

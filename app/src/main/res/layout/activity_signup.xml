@@ -13,12 +13,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintVertical_bias="0.5"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.5">
         <!--name input-->
         <EditText
             android:id="@+id/textInputName"
@@ -28,11 +28,11 @@
             android:drawableStart="@drawable/ic_person"
             android:drawablePadding="5dp"
             android:fontFamily="monospace"
-            android:inputType="text"
             android:hint="Name"
+            android:imeOptions="actionNext"
+            android:inputType="text"
             android:textColorHint="#cdcdcd"
             android:textSize="15sp"
-            android:imeOptions="actionNext"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -44,10 +44,10 @@
             android:layout_margin="5dp"
             android:drawableStart="@drawable/ic_person"
             android:drawablePadding="5dp"
-            android:fontFamily="monospace"
+            android:fontFamily="serif"
             android:hint="Surname"
-            android:inputType="text"
             android:imeOptions="actionNext"
+            android:inputType="text"
             android:textColorHint="#cdcdcd"
             android:textSize="15sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -58,13 +58,13 @@
             android:id="@+id/textLabelGender"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
             android:layout_marginStart="0dp"
+            android:layout_marginTop="5dp"
             android:layout_marginEnd="5dp"
             android:layout_marginBottom="5dp"
             android:drawableStart="@drawable/ic_wc"
             android:drawablePadding="5dp"
-            android:fontFamily="monospace"
+            android:fontFamily="serif"
             android:text="Gender"
             android:textColor="#cdcdcd"
             android:textSize="15sp"
@@ -81,25 +81,27 @@
             android:drawableStart="@drawable/ic_person"
             android:drawablePadding="5dp"
             android:entries="@array/gender"
-            android:fontFamily="monospace"
+            android:fontFamily="serif"
+            android:imeOptions="actionNext"
             android:text="Gender"
             android:textColorHint="#cdcdcd"
-            android:imeOptions="actionNext"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.9"
             app:layout_constraintStart_toEndOf="@id/textLabelGender"
             app:layout_constraintTop_toBottomOf="@id/textInputSurname"
             tools:layout_editor_absoluteY="100dp" />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="0.9dp"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             android:background="#000"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/spinnerGender"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/spinnerGender" />
+
         <TextView
             android:id="@+id/textLabelRole"
             android:layout_width="100dp"
@@ -110,7 +112,7 @@
             android:layout_marginBottom="5dp"
             android:drawableStart="@drawable/ic_role"
             android:drawablePadding="5dp"
-            android:fontFamily="monospace"
+            android:fontFamily="serif"
             android:text="Role"
             android:textColor="#cdcdcd"
             android:textSize="15sp"
@@ -122,69 +124,72 @@
         <Spinner
             android:id="@+id/spinnerRole"
             android:layout_width="230dp"
-            android:layout_marginTop="5dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:drawableStart="@drawable/ic_role"
             android:drawablePadding="5dp"
             android:entries="@array/roles"
-            android:fontFamily="monospace"
+            android:fontFamily="serif"
+            android:imeOptions="actionNext"
             android:text="Gender"
             android:textColorHint="#cdcdcd"
-            android:imeOptions="actionNext"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.9"
             app:layout_constraintStart_toEndOf="@id/textLabelRole"
             app:layout_constraintTop_toBottomOf="@id/spinnerGender"
             tools:layout_editor_absoluteY="100dp" />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="0.9dp"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             android:background="#000"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/spinnerRole"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/spinnerRole" />
 
         <DatePicker
             android:id="@+id/datePicker"
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:layout_marginTop="1dp"
-            android:layout_marginBottom="5dp"
-            android:datePickerMode="spinner"
             android:layout_marginEnd="0dp"
+            android:layout_marginBottom="5dp"
             android:calendarViewShown="false"
-            android:maxDate="2019"
+            android:datePickerMode="spinner"
             android:endYear="2019"
-            app:layout_constraintStart_toStartOf="parent"
+            android:maxDate="2019"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/spinnerRole">
+
             <TextView
                 android:layout_width="75dp"
                 android:layout_height="wrap_content"
-                android:text="DOB"
-                android:fontFamily="monospace"
                 android:layout_marginStart="5dp"
+                android:layout_marginTop="35dp"
                 android:drawableStart="@drawable/ic_date_range"
                 android:drawablePadding="5dp"
+                android:fontFamily="serif"
+                android:text="DOB"
                 android:textColor="#cdcdcd"
-                android:textSize="15sp"
-                android:layout_marginTop="35dp" />
+                android:textSize="15sp" />
         </DatePicker>
 
         <View
             android:id="@+id/viewSeparator2"
             android:layout_width="match_parent"
             android:layout_height="0.9dp"
-            android:background="#000"
-            android:layout_marginTop="0dp"
             android:layout_marginStart="5dp"
+            android:layout_marginTop="0dp"
             android:layout_marginEnd="5dp"
-            app:layout_constraintStart_toStartOf="parent"
+            android:background="#000"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/datePicker"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/datePicker" />
+
         <EditText
             android:id="@+id/textInputIdNumber"
             android:layout_width="match_parent"
@@ -192,7 +197,7 @@
             android:layout_margin="5dp"
             android:drawableStart="@drawable/ic_person"
             android:drawablePadding="5dp"
-            android:fontFamily="monospace"
+            android:fontFamily="serif"
             android:hint="ID Number"
             android:imeOptions="actionNext"
             android:inputType="number"
@@ -209,12 +214,12 @@
             android:layout_margin="5dp"
             android:drawableStart="@drawable/ic_phone"
             android:drawablePadding="5dp"
-            android:fontFamily="monospace"
+            android:fontFamily="serif"
             android:hint="Cell number"
-            android:textSize="15sp"
             android:imeOptions="actionNext"
             android:inputType="number"
             android:textColorHint="#cdcdcd"
+            android:textSize="15sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textInputIdNumber" />
@@ -226,16 +231,15 @@
             android:layout_margin="5dp"
             android:drawableStart="@drawable/ic_email"
             android:drawablePadding="5dp"
-            android:inputType="textEmailAddress"
-            android:fontFamily="monospace"
+            android:fontFamily="serif"
             android:hint="Email address"
+            android:imeOptions="actionNext"
+            android:inputType="textEmailAddress"
             android:textColorHint="#cdcdcd"
             android:textSize="15sp"
-            android:imeOptions="actionNext"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textInputCellNumber" />
-
 
 
         <EditText
@@ -245,15 +249,32 @@
             android:layout_margin="5dp"
             android:drawableStart="@drawable/ic_lock"
             android:drawablePadding="5dp"
-            android:fontFamily="monospace"
+            android:fontFamily="serif"
             android:hint="Password"
-            android:inputType="textPassword"
             android:imeOptions="actionDone"
+            android:inputType="textPassword"
             android:textColorHint="#cdcdcd"
             android:textSize="15sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textInputRegEmail" />
+
+        <EditText
+            android:id="@+id/textInputConfirmPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:drawableStart="@drawable/ic_lock"
+            android:drawablePadding="5dp"
+            android:fontFamily="serif"
+            android:hint="Confirm Password"
+            android:imeOptions="actionDone"
+            android:inputType="textPassword"
+            android:textColorHint="#cdcdcd"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textInputPassword" />
 
         <Button
             android:id="@+id/btnSignUp"
@@ -261,13 +282,14 @@
             android:layout_height="40dp"
             android:layout_margin="10dp"
             android:background="@drawable/widget_border_bg"
+            android:fontFamily="serif"
             android:text="Create account"
             android:textColor="#000000"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textInputPassword" />
+            app:layout_constraintTop_toBottomOf="@+id/textInputConfirmPassword" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

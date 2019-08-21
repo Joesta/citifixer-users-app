@@ -2,6 +2,7 @@ package com.dso30bt.project2019.potapp.repository;
 
 
 import com.dso30bt.project2019.potapp.models.LoginModel;
+import com.dso30bt.project2019.potapp.models.Person;
 import com.dso30bt.project2019.potapp.models.Pothole;
 import com.dso30bt.project2019.potapp.models.User;
 import com.google.firebase.firestore.DocumentReference;
@@ -14,15 +15,16 @@ import java.util.Map;
  */
 public interface IUserRepository {
 
-    void registerUser(Object obj);
+    void registerUser(Person appUser);
 
+    void loginUserByEmail(final LoginModel loginModel);
+/*
     void deleteUser(String email);
 
     void updateUser(Map<String, Object> userMap, DocumentReference documentRef);
 
-    void loginUserByEmail(LoginModel loginModel);
-
-    // User getUser(DocumentReference documentRef);
 
     void addPotholeAndImage(Pothole pothole, File imageFile);
+
+    */
 }
