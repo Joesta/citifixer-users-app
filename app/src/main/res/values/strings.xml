@@ -16,6 +16,7 @@
         <item>On Leave</item>
     </string-array>
 
+    <!--cell number array prefix-->
     <string-array name="cellphone_prefix">
         <!--06 prefix-->
         <item>060</item>
@@ -39,14 +40,17 @@
         <item>084</item>
     </string-array>
 
-    <string name="title_activity_main2">Main2Activity</string>
+    <!--nav drawer-->
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <!--nav drawer text-->
     <string name="nav_header_title">City-Fixer</string>
     <string name="nav_header_subtitle">user@cityfixer.co.za</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
+    <!--google keys-->
     <string name="API_KEY">PASTE_KEY_HERE</string>
     <string name="geocode_request">https://maps.googleapis.com/maps/api/geocode/json?latlng=%1$.20f&#44;%2$.20f&amp;key=</string>
 
@@ -55,24 +59,5 @@
 
     <!--OK status-->
     <string name="status">OK</string>
-
-
-
-    <string-array name="veggies">
-        <item>Cabbage(10)</item>
-        <item>Carrots(20)</item>
-        <item>Green paper(132)</item>
-        <item>Onion(500)</item>
-    </string-array>
-
-    <string-array name="dairy">
-        <item>Ice create(300)</item>
-        <item>Milk(343)</item>
-        <item>Danao(20)</item>
-        <item>Cheese(90)</item>
-    </string-array>
-
-
-
 
 </resources>

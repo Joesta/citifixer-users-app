@@ -84,14 +84,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     /***
-     * get user login input from login activity
-     */
-    private void getUserLoginInput() {
-        emailAddress = textInputEmailAddress.getText().toString();
-        password = textInputPassword.getText().toString();
-    }
-
-    /***
      * valudate user input
      * @param emailAddress user input email
      * @param password user input password
@@ -181,6 +173,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             // user input are OK. Proceed
             authenticateUser(this.emailAddress, this.password);
         }
+    }
+
+    /***
+     * get user login input from login activity
+     */
+    private void getUserLoginInput() {
+        emailAddress = textInputEmailAddress.getText().toString();
+        password = textInputPassword.getText().toString();
     }
 
     /***

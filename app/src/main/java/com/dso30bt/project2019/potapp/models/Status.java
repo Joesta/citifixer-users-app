@@ -13,10 +13,11 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 public class Status {
-    private int id;
+    private int statusId;
     private String description;
 
-    public Status(String description) {
+    public Status(int statusId, String description) {
+        this.statusId = statusId;
         this.description = description;
     }
 }

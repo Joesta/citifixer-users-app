@@ -5,8 +5,8 @@
     package="com.dso30bt.project2019.potapp">
 
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
@@ -47,7 +47,11 @@
         <!-- Image activity -->
         <activity
             android:name=".activities.PotholeImageCaptureActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MainActivity" />
+        </activity>
 
         <!-- About activity -->
         <activity
@@ -62,8 +66,8 @@
         <!-- Profile activity -->
         <activity
             android:name=".activities.UserProfileActivity"
-            android:launchMode="singleTop"
             android:label="Profile"
+            android:launchMode="singleTop"
             android:parentActivityName=".activities.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -79,8 +83,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.MainActivity" />
         </activity>
-
-        <activity android:name=".activities.DietActivity"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"

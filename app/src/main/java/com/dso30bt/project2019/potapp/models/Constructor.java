@@ -12,7 +12,6 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode(callSuper = false)
 public class Constructor extends Person {
-    private int id;
     private String imageUrl;
     private Status status;
 
@@ -21,7 +20,7 @@ public class Constructor extends Person {
     }
 
     public Constructor(String firstName, String lastName, String gender, String idNumber, String dob, String password, String emailAddress, Role role, String imageUrl, Status status, String cellNumber) {
-        super(firstName, lastName, gender, idNumber, dob, password, emailAddress, role, cellNumber);
+        super(0, firstName, lastName, gender, idNumber, dob, password, emailAddress, role, cellNumber);
         this.imageUrl = imageUrl;
         this.status = status;
     }

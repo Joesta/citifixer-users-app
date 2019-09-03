@@ -236,7 +236,6 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             String dob = getUserDoB();
             // create a person [ Road User or Constructor based on role ]
             Person person = Utils.generatePerson(firstName, lastName, gender, idNumber, dob, userRole, "", password, emailAddress, cellNumber);
-
             UserImpl userImpl = new UserImpl(SignUpActivity.this);
             userImpl.registerUser(person);
 

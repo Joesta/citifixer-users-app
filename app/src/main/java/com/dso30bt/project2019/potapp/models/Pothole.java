@@ -12,8 +12,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Pothole {
-    private int id;
+    private int potholeId;
     private int userId;
+    private User user;
     private String potholeUrl;
+    private String description;
     private Coordinates coordinates;
 }

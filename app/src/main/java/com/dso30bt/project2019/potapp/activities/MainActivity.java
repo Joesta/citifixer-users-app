@@ -17,10 +17,16 @@ import android.widget.Toast;
 
 import com.baoyz.widget.PullRefreshLayout;
 import com.dso30bt.project2019.potapp.R;
+import com.dso30bt.project2019.potapp.adapters.PotholeReportAdapter;
 import com.dso30bt.project2019.potapp.models.Constructor;
+import com.dso30bt.project2019.potapp.models.Pothole;
+import com.dso30bt.project2019.potapp.models.Report;
+import com.dso30bt.project2019.potapp.models.User;
 import com.dso30bt.project2019.potapp.models.enums.UserEnum;
+import com.dso30bt.project2019.potapp.utils.Constants;
 import com.dso30bt.project2019.potapp.utils.NavUtil;
 import com.dso30bt.project2019.potapp.utils.SharedPreferenceManager;
+import com.dso30bt.project2019.potapp.utils.Utils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -65,7 +71,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ProgressBar progressBarMain;
     //array list adapter
     private ArrayAdapter<Constructor> constructorArrayAdapter;
-    private String collection = null;
+    private String mCollection = null;
+    private int mUserType;
+    private String mEmail;
+    private FloatingActionButton mFab;
 
 
     @Override
@@ -75,15 +84,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         initUI();
 
-        int userType = SharedPreferenceManager.getFlag(this);
-        setUserTypeTitle(userType);
+        mUserType = SharedPreferenceManager.getFlag(this);
+        mEmail = SharedPreferenceManager.getEmail(this);
+
+        setUserTypeTitle(mUserType);
 
 
-        //getUserPotholeReportsFromDatabase();
+        getReportsFromDatabase();
     }
 
     private void setUserTypeTitle(int userType) {
-        if (userType == UserEnum.CONSTRUCTOR.value) {
+        if (userType == UserEnum.CONSTRUCTOR.ordinal()) {
             this.setTitle("Reports ( 0 )");
             lvConstructorPotholes.setVisibility(View.VISIBLE);
         }
@@ -140,8 +151,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         recyclerView.setLayoutManager(layoutManager);
 
         // initializing floating action button
-        FloatingActionButton fab = findViewById(R.id.fab);
-        registerListenerOnFab(fab);
+        mFab = findViewById(R.id.fab);
+        registerListenerOnFab();
 
 
         swipeRefreshLayout = (PullRefreshLayout) findViewById(R.id.swipeRefreshLayout);
@@ -170,10 +181,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /***
      * register floating action button to click listener
-     * @param fab to register click listener to
      */
-    private void registerListenerOnFab(FloatingActionButton fab) {
-        fab.setOnClickListener(this);
+    private void registerListenerOnFab() {
+        mFab.setOnClickListener(this);
     }
 
     @Override
@@ -302,4 +312,58 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void viewReports() {
     }
 
+    private void getReportsFromDatabase() {
+        Log.i(TAG, "getReportsFromDatabase: method executed");
+        mCollection = (mUserType == UserEnum.USER.ordinal()) ? Constants.USER_COLLECTION : Constants.CONSTRUCTOR_COLLECTION;
+        Log.i(TAG, "getReportsFromDatabase: collection is set to " + mCollection);
+
+        db.collection(mCollection).document(mEmail).addSnapshotListener(this, (snapshot, error) -> {
+
+            if (error != null) {
+                this.setTitle("Reports ( 0 )");
+                return;
+            }
+
+            if (snapshot != null && snapshot.exists()) {
+                User user;
+                Constructor constructor;
+
+                List<Report> reportList;
+
+                if (mUserType == UserEnum.USER.ordinal()) {
+                    user = snapshot.toObject(User.class);
+                    reportList = user.getReportList();
+                    if (!"".equals(user.getImageUrl())) {
+                        setNavHeaderInfo(user.getFirstName(), user.getEmailAddress(), user.getImageUrl());
+                    } else {
+                        // no image url found for user
+                        headerImageProPic.setImageResource(R.drawable.imageholder);
+                        setNavHeaderInfo(user.getFirstName(), user.getEmailAddress());
+                    }
+
+                    reportList = user.getReportList();
+                    if (reportList.size() > 0) {
+                        //instantiate pothole adapter
+                        PotholeReportAdapter potholeReportAdapter = new PotholeReportAdapter(MainActivity.this, reportList);
+                        recyclerView.setAdapter(potholeReportAdapter);
+                    }
+
+                } else {
+                    constructor = snapshot.toObject(Constructor.class);
+                    //hide fab
+                    mFab.hide();
+                    MenuItem item = navMenu.findItem(R.id.nav_reports);
+                    item.setTitle("Assigned Reports");
+
+                    if (!"".equals(constructor.getImageUrl())) {
+                        setNavHeaderInfo(constructor.getFirstName(), constructor.getEmailAddress(), constructor.getImageUrl());
+                    } else {
+                        // no image url found for user
+                        headerImageProPic.setImageResource(R.drawable.imageholder);
+                        setNavHeaderInfo(constructor.getFirstName(), constructor.getEmailAddress());
+                    }
+                }
+            }
+        });
+    }
 }

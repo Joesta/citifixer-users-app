@@ -14,7 +14,8 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 public class UserReport implements Serializable {
-    private int id;
+    private int userReportId;
     private int userId;
+    private User user;
     private List<Report> reportList;
 }

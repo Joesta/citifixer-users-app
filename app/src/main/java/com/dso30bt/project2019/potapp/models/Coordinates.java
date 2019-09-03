@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Coordinates {
-    private int id;
+    private int coordinateId;
     private double latitude;
     private double longitude;
 }

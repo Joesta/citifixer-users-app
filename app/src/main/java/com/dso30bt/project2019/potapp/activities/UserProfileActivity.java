@@ -152,13 +152,13 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         showOrHideEditButton(View.GONE);
         showOrHideProgressBar(View.VISIBLE);
 
-        final int flag = SharedPreferenceManager.getFlag(UserProfileActivity.this);
+        int flag = SharedPreferenceManager.getFlag(UserProfileActivity.this);
 
-        if (flag == UserEnum.USER.value) {
+        if (flag == UserEnum.USER.ordinal()) {
             mCollection = Constants.USER_COLLECTION;
             hideViews();
 
-        } else if (flag == UserEnum.CONSTRUCTOR.value) {
+        } else if (flag == UserEnum.CONSTRUCTOR.ordinal()) {
             mCollection = Constants.CONSTRUCTOR_COLLECTION;
         }
 
@@ -184,7 +184,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
 
                         } else {
 
-                            if (role.getRoleDescription().equalsIgnoreCase(RoleEnum.USER.role)) {
+                            if (role.getRoleDescription().equalsIgnoreCase(RoleEnum.User.role)) {
                                 //user
                                 User user = snapshot.toObject(User.class);
                                 assert user != null;
@@ -481,6 +481,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                 .update(Constants.DocumentFields.FIST_NAME, firstName,
                         Constants.DocumentFields.LAST_NAME, lastName,
                         Constants.DocumentFields.CELL_NUMBER, cellNumber)
+                /*attaching onSuccessListener*/
                 .addOnSuccessListener(UserProfileActivity.this, aVoid -> {
 
                     Snacky
@@ -495,6 +496,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                     showOrHideEditButton(View.VISIBLE);
 
                 })
+                /* attaching onFailureListener*/
                 .addOnFailureListener(UserProfileActivity.this, error -> {
                     Snacky
                             .builder()

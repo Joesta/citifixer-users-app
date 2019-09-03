@@ -10,7 +10,7 @@
 //
 //import com.dso30bt.project2019.potapp.R;
 //import com.dso30bt.project2019.potapp.models.Constructor;
-//import com.dso30bt.project2019.potapp.models.enums.StatusEnum;
+//import com.dso30bt.project2019.potapp.models.enums.ConstructorStatusEnum;
 //
 //import java.util.List;
 //
@@ -47,10 +47,10 @@
 //            tvConstructorFirstName.setText(fullName);
 //
 //            String status = constructor.getStatus();
-//            if (status.equalsIgnoreCase(StatusEnum.AVAILABLE.value)) {
+//            if (status.equalsIgnoreCase(ConstructorStatusEnum.AVAILABLE.value)) {
 //                imageStatus.setImageResource(R.drawable.available);
 //            } else {
-//                if (status.equalsIgnoreCase(StatusEnum.BUSY.value)) {
+//                if (status.equalsIgnoreCase(ConstructorStatusEnum.BUSY.value)) {
 //                    imageStatus.setImageResource(R.drawable.busy);
 //                } else {
 //                    imageStatus.setImageResource(R.drawable.on_leave);

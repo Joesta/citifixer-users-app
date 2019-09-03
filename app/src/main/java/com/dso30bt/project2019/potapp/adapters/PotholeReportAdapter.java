@@ -1,7 +1,6 @@
 package com.dso30bt.project2019.potapp.adapters;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +11,7 @@ import android.widget.TextView;
 
 import com.dso30bt.project2019.potapp.R;
 import com.dso30bt.project2019.potapp.models.Pothole;
+import com.dso30bt.project2019.potapp.models.Report;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -23,23 +23,32 @@ import androidx.recyclerview.widget.RecyclerView;
 /**
  * Created by Joesta on 2019/07/05.
  */
-public class PotholeAdapter extends RecyclerView.Adapter<PotholeAdapter.ViewHolder> implements Filterable {
+public class PotholeReportAdapter extends RecyclerView.Adapter<PotholeReportAdapter.ViewHolder> implements Filterable {
 
     //widgets
     private View view;
 
     //vars
     private Context context;
-    private String name;
+    private List<Report> reportList;
     private List<Pothole> potholeList;
     private List<Pothole> filterPotholes;
 
     // constructor
-    public PotholeAdapter(Context context, List<Pothole> potholeList, String name) {
+    public PotholeReportAdapter(Context context, List<Report> reportList) {
         this.context = context;
-        this.potholeList = potholeList;
-        this.filterPotholes = potholeList;
-        this.name = name;
+        this.reportList = reportList;
+        //this.filterPotholes = potholeList;
+
+        initPotholeList();
+    }
+
+    private void initPotholeList() {
+        potholeList = new ArrayList<>();
+
+        for (Report report : reportList) {
+            potholeList.add(report.getPothole());
+        }
     }
 
     @NonNull
@@ -54,19 +63,20 @@ public class PotholeAdapter extends RecyclerView.Adapter<PotholeAdapter.ViewHold
 
         Picasso
                 .get()
-                .load(potholeList.get(position).getPotholeUrl())
+//                .load(potholeList.get(position).getPotholeUrl())
+                .load(R.drawable.pothole_image_holder)
                 .into(holder.potholeImageView);
 
-//        holder.descriptionTextValue.setText(potholeList.get(position).getDescription());
-//        holder.latitudeTextValue.setText(String.valueOf(potholeList.get(position).getCoordinates().getLatitude()));
-//        holder.longitudeTextValue.setText(String.valueOf(potholeList.get(position).getCoordinates().getLongitude()));
-//        holder.dateReportedTextValue.setText(String.valueOf(potholeList.get(position).getCoordinates().getDate()));
-//        holder.reporterName.setText(name);
+        holder.descriptionTextValue.setText(potholeList.get(position).getDescription());
+        holder.latitudeTextValue.setText(String.valueOf(potholeList.get(position).getCoordinates().getLatitude()));
+        holder.longitudeTextValue.setText(String.valueOf(potholeList.get(position).getCoordinates().getLongitude()));
+        holder.dateReportedTextValue.setText(String.valueOf(reportList.get(position).getReportDate()));
+        holder.reporterName.setText(reportList.get(position).getReportedBy());
     }
 
     @Override
     public int getItemCount() {
-        return potholeList.size();
+        return reportList.size();
     }
 
     @Override

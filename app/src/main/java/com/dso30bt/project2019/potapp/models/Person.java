@@ -28,7 +28,8 @@ public class Person implements Serializable {
         super();
     }
 
-    public Person(String firstName, String lastName, String gender, String idNumber, String dob, String password, String emailAddress, Role role, String cellNumber) {
+    public Person(int userId, String firstName, String lastName, String gender, String idNumber, String dob, String password, String emailAddress, Role role, String cellNumber) {
+        this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;

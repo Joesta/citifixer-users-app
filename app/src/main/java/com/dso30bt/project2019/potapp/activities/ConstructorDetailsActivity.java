@@ -182,7 +182,7 @@ public class ConstructorDetailsActivity extends AppCompatActivity implements Ada
     }
 
     private boolean isConstructorAvailable() {
-        //return !mConstructor.getStatus().equalsIgnoreCase(StatusEnum.AVAILABLE.value);
+        //return !mConstructor.getStatus().equalsIgnoreCase(ConstructorStatusEnum.AVAILABLE.value);
 
         return false;
     }
