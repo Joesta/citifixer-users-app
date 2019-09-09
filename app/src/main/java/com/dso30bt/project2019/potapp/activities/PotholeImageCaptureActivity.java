@@ -131,10 +131,9 @@ public class PotholeImageCaptureActivity extends AppCompatActivity implements Vi
 
                             //save image uri
                             imageUri = Uri.fromFile(file);
-                            //final double[] imageCoordinates = getCoordinatesFromFile(file);
-                            double[] imageCoordinates = new double[]{10.0000, 20.000000};
+                            final double[] imageCoordinates = getCoordinatesFromFile(file);
+                            //double[] imageCoordinates = new double[]{10.0000, 20.000000}; // for testing with emulator
                             if (imageCoordinates != null) {
-                                //final double[] imageCoordinates = new double[]{-25.7499763, 28.2151983};
                                 Log.d(TAG, "onActivityResult: coordinates. Lat " + imageCoordinates[0] + " lng " + imageCoordinates[1]);
                                 coordinates = getCoordinates(imageCoordinates);
                                 displayPotholeInfo(scaled, coordinates);
@@ -232,7 +231,7 @@ public class PotholeImageCaptureActivity extends AppCompatActivity implements Vi
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Take another photo?");
         builder.setPositiveButton("Yes", (dialog, which) -> dispatchTakePictureIntent());
-        builder.setNegativeButton("No", (dialog, which) -> dialog.dismiss()).create();
+        builder.setNegativeButton("No", (dialog, which) -> gotHome());
 
         builder.show();
     }

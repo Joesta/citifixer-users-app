@@ -63,8 +63,8 @@ public class PotholeReportAdapter extends RecyclerView.Adapter<PotholeReportAdap
 
         Picasso
                 .get()
-//                .load(potholeList.get(position).getPotholeUrl())
-                .load(R.drawable.pothole_image_holder)
+                .load(potholeList.get(position).getPotholeUrl())
+                //.load(R.drawable.pothole_image_holder)
                 .into(holder.potholeImageView);
 
         holder.descriptionTextValue.setText(potholeList.get(position).getDescription());

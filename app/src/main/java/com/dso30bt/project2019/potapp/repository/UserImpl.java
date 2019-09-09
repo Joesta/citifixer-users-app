@@ -32,6 +32,7 @@ import java.io.File;
 import java.util.UUID;
 
 import de.mateware.snacky.Snacky;
+import okhttp3.internal.Util;
 
 /**
  * Created by Joesta on 2019/05/30.
@@ -191,10 +192,31 @@ public class UserImpl implements IUserRepository {
                     if (task.isComplete()) {
 
                         Pothole pothole = report.getPothole(); // user callback
-                        preparePothole(pothole, user);
-                        Log.i(TAG, "prepareReport: report saved, now trying to save pothole");
 
-                        updateUserReport(report);
+                        /*start getting pothole download url*/
+                        final File imageFile = new File(pothole.getPotholeUrl()); //@Todo - no side-effects, but fix it. Not making sense!!!!
+                        Uri imageUri = Uri.fromFile(imageFile);
+                        String path = "potholes/" + UUID.randomUUID().toString() + imageUri.getLastPathSegment();
+
+                        StorageReference storageRef = mStorage.getReference(path);
+                        UploadTask uploadTask = storageRef.putFile(imageUri);
+                        uploadTask.addOnSuccessListener((Activity) context, taskSnapshot -> {
+
+                            //get download url
+                            Task<Uri> downloadUrl = taskSnapshot.getStorage().getDownloadUrl();
+                            downloadUrl.addOnSuccessListener((Activity) context, uri -> {
+                                //add url to url pothole url list
+                                Log.i(TAG, "preparePothole: pothole download url is " + uri.toString());
+                                pothole.setPotholeUrl(uri.toString());
+                                pothole.setUser(user);
+                                savePothole(pothole);
+
+                                updateUserReport(report);
+
+                            }).addOnFailureListener(error -> Utils.showToast(context, "Error: " + error.getLocalizedMessage()));
+
+                        }).addOnFailureListener(error -> Utils.showToast(context, "Error: " + error.getLocalizedMessage()));
+                        /*end getting pothole download url*/
 
                     } else {
                         Log.i(TAG, "prepareReport: failed to save report");
@@ -203,6 +225,7 @@ public class UserImpl implements IUserRepository {
                 }); // end fetch report
     }
 
+    //@Todo - minify code for re-use
     private void preparePothole(Pothole pothole, User user) {
 
         pothole.setUser(user);
@@ -258,7 +281,10 @@ public class UserImpl implements IUserRepository {
                 .collection(Constants.USER_COLLECTION)
                 .document(userEmail)
                 .update("reportList", FieldValue.arrayUnion(report))
-                .addOnSuccessListener(((Activity) context), aVoid -> Log.i(TAG, "updateUserReport: User report updated"))
+                .addOnSuccessListener(((Activity) context), aVoid -> {
+                    Log.i(TAG, "updateUserReport: User report updated");
+                    Utils.showToast(context, "Report Saved");
+                })
                 .addOnFailureListener(((Activity) context), error -> Log.e(TAG, "updateUserReport: failed to update user report"));
     }
 
@@ -282,53 +308,4 @@ public class UserImpl implements IUserRepository {
                 });
         Log.i(TAG, "fetchUser: task finished. User is fetched.");
     }
-
-
-//    public void addPotholeAndImage(Pothole pothole, File imageFile) {
-//        FirebaseFirestore db = FirebaseFirestore.getInstance();
-//        DocumentReference documentRef = db.collection(Constants.USER_COLLECTION)
-//                .document(userEmail);
-//        documentRef.get().addOnSuccessListener(documentSnapshot -> {
-//            if (documentSnapshot.exists()) {
-//                Log.d(TAG, "addPotholeAndImage: document exists. add pothole for the mUser");
-//
-//                if (imageFile != null && pothole != null && pothole.getCoordinates() != null) {
-//                    Uri imageUri = Uri.fromFile(imageFile);
-//                    String path = "potholes/" + UUID.randomUUID().toString() + imageUri.getLastPathSegment();
-//
-//                    StorageReference storageRef = mStorage.getReference(path);
-//                    UploadTask uploadTask = storageRef.putFile(imageUri);
-//                    uploadTask.addOnSuccessListener((Activity) context, taskSnapshot -> {
-//
-//                        User user = documentSnapshot.toObject(User.class);
-//
-//                        //get download url
-//                        Task<Uri> downloadUrl = taskSnapshot.getStorage().getDownloadUrl();
-//                        downloadUrl.addOnSuccessListener((Activity) context, uri -> {
-//                            //add url to url pothole url list
-//                            pothole.setPotholeUrl(uri.toString());
-//
-//                            final String reporterFullName = user.getName() + user.getSurname();
-//                            pothole.setReportedBy(reporterFullName);
-//
-//                            //add mUser pothole
-//                            user.getPotholes().add(pothole);
-//                            Map<String, Object> userMap = getMap(user);
-//                            updateUser(userMap, documentRef);
-//
-//                            Utils.showToast(context, "Report was send!");
-//
-//                        }).addOnFailureListener(error -> Utils.showToast(context, "Error: " + error.getLocalizedMessage()));
-//
-//                    }).addOnFailureListener(error -> Utils.showToast(context, "Error: " + error.getLocalizedMessage()));
-//                } else {
-//                    Utils.showToast(context, "An error occurred while trying to upload. Please retry!");
-//                }
-//
-//            } else {
-//                Log.d(TAG, "addPotholeAndImage: document for mUser does not exist");
-//            }
-//        }).addOnFailureListener(error -> Utils.showToast(context, "Error: " + error.getLocalizedMessage()));
-//    }
-
 }

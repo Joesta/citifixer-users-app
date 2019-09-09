@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.baoyz.widget.PullRefreshLayout;
 import com.dso30bt.project2019.potapp.R;
+import com.dso30bt.project2019.potapp.adapters.ConstructorPotholeAdapter;
 import com.dso30bt.project2019.potapp.adapters.PotholeReportAdapter;
 import com.dso30bt.project2019.potapp.models.Constructor;
 import com.dso30bt.project2019.potapp.models.Pothole;
@@ -33,6 +34,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
+import java.util.Date;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -332,7 +334,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 if (mUserType == UserEnum.USER.ordinal()) {
                     user = snapshot.toObject(User.class);
-                    reportList = user.getReportList();
+
                     if (!"".equals(user.getImageUrl())) {
                         setNavHeaderInfo(user.getFirstName(), user.getEmailAddress(), user.getImageUrl());
                     } else {
@@ -362,6 +364,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         headerImageProPic.setImageResource(R.drawable.imageholder);
                         setNavHeaderInfo(constructor.getFirstName(), constructor.getEmailAddress());
                     }
+
+                    List<Report> constructorReportList = constructor.getReportList();
+
+                    /* testing constructor report*/
+//                    User u = new User();
+//                    u.setCellNumber("0631442166");
+//                    u.setFirstName("Joesta");
+//                    u.setLastName("Sebolela");
+//                    u.setIdNumber("9204145958087");
+//                    u.setGender("Male");
+//
+//                    Report r = new Report();
+//                    r.setReportDate(new Date());
+//                    r.setUser(u);
+//                    r.setAssignedBy("Test user");
+
+
+//                    constructorReportList.add(r);
+
+                    // change home screen title
+                    this.setTitle("Reports ( " + constructorReportList.size() + " )");
+                    ConstructorPotholeAdapter constructorPotholeAdapter
+                            = new ConstructorPotholeAdapter(MainActivity.this, constructorReportList);
+
+                    lvConstructorPotholes.setAdapter(constructorPotholeAdapter);
                 }
             }
         });

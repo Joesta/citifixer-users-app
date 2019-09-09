@@ -8,7 +8,8 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.dso30bt.project2019.potapp.R;
-import com.dso30bt.project2019.potapp.models.Pothole;
+import com.dso30bt.project2019.potapp.models.Report;
+import com.dso30bt.project2019.potapp.utils.NavUtil;
 
 import java.util.List;
 
@@ -18,8 +19,8 @@ import androidx.annotation.Nullable;
 /**
  * Created by Joesta on 2019/07/17.
  */
-public class ConstructorPotholeAdapter extends ArrayAdapter<Pothole> {
-    private List<Pothole> potholeList;
+public class ConstructorPotholeAdapter extends ArrayAdapter<Report> {
+    private List<Report> reportList;
     private Context context;
 
     /*widgets*/
@@ -29,9 +30,9 @@ public class ConstructorPotholeAdapter extends ArrayAdapter<Pothole> {
     private TextView tvPotholeStatus;
 
 
-    public ConstructorPotholeAdapter(@NonNull Context context, @NonNull List<Pothole> objects) {
+    public ConstructorPotholeAdapter(@NonNull Context context, @NonNull List<Report> objects) {
         super(context, 0, objects);
-        this.potholeList = objects;
+        this.reportList = objects;
         this.context = context;
     }
 
@@ -47,15 +48,25 @@ public class ConstructorPotholeAdapter extends ArrayAdapter<Pothole> {
             setUITextValues(position);
         }
 
-
         return listItem;
     }
 
     private void setUITextValues(final int position) {
-//        tvAssingedBy.setText(potholeList.get(position).getAssignedBy());
-//        tvReporter.setText(potholeList.get(position).getReportedBy());
-//        tvReportDate.setText(String.valueOf(potholeList.get(position).getCoordinates().getDate()));
-//        tvPotholeStatus.setText("");
+        String assignedBy = reportList.get(position).getAssignedBy();
+        String reportedBy = reportList
+                .get(position)
+                .getUser()
+                .getFirstName() + " " + reportList
+                .get(position)
+                .getUser()
+                .getLastName();
+        String date = reportList.get(position).getReportDate().toString();
+
+
+        tvAssingedBy.setText(assignedBy);
+        tvReporter.setText(reportedBy);
+        tvReportDate.setText(date);
+        tvPotholeStatus.setText("");
     }
 
     private void initUI(View listItem) {

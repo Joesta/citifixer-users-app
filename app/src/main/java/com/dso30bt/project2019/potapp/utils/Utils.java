@@ -34,7 +34,7 @@ public class Utils {
         } else {
             // create a constructor with default status set to available
             Status status = generateConstructorOrReportStatus(0, ConstructorStatusEnum.AVAILABLE.value);
-            return new Constructor(firstName, lastName, gender, idNumber, dob, password, emailAddress, role, imageUrl, status, cellNumber);
+            return new Constructor(firstName, lastName, gender, idNumber, dob, password, emailAddress, role, imageUrl, status, cellNumber, new ArrayList<>());
         }
     }
 
