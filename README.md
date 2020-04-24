@@ -1,6 +1,6 @@
 *CityFixer Android App*
 
-This App allow users to take a photo of potholes and report it to local municipality, togther with localtion of where the photo was captured (Address) using coordinates, description and severity.
+Users make a report of a damaged infrastructure and save it to a database. We integrated maps to allow users to show where their reports were made, timestamp, and image of the damaged infrastructure.
 
 ---
 
